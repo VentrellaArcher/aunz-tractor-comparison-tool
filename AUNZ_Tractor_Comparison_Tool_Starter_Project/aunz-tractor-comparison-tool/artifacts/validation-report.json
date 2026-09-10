@@ -1,0 +1,1906 @@
+{
+  "errors": [],
+  "warnings": [
+    {
+      "row": 2,
+      "machineId": "john-deere-5050e-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 3,
+      "machineId": "john-deere-5055e-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 4,
+      "machineId": "john-deere-5065e-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 5,
+      "machineId": "john-deere-5075e-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 6,
+      "machineId": "john-deere-5082e-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 7,
+      "machineId": "john-deere-5090e-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 8,
+      "machineId": "john-deere-5075m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 9,
+      "machineId": "john-deere-5085m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 10,
+      "machineId": "john-deere-5095m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 11,
+      "machineId": "john-deere-5105m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 12,
+      "machineId": "john-deere-5120m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 13,
+      "machineId": "john-deere-5130m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 14,
+      "machineId": "john-deere-6m-95-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 15,
+      "machineId": "john-deere-6m-105-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 16,
+      "machineId": "john-deere-6m-110-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 17,
+      "machineId": "john-deere-6m-125-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 18,
+      "machineId": "john-deere-6m-130-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 19,
+      "machineId": "john-deere-6m-140-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 20,
+      "machineId": "john-deere-6m-155-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 21,
+      "machineId": "john-deere-6m-180-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 22,
+      "machineId": "john-deere-6m-200-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 23,
+      "machineId": "john-deere-6m-220-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 24,
+      "machineId": "john-deere-6m-230-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 25,
+      "machineId": "john-deere-6m-250-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 26,
+      "machineId": "john-deere-6r-110-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 27,
+      "machineId": "john-deere-6r-120-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 28,
+      "machineId": "john-deere-6r-130-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 29,
+      "machineId": "john-deere-6r-140-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 30,
+      "machineId": "john-deere-6r-145-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 31,
+      "machineId": "john-deere-6r-150-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 32,
+      "machineId": "john-deere-6r-155-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 33,
+      "machineId": "john-deere-6r-165-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 34,
+      "machineId": "john-deere-6r-175-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 35,
+      "machineId": "john-deere-6r-185-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 36,
+      "machineId": "john-deere-6r-195-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 37,
+      "machineId": "john-deere-6r-215-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 38,
+      "machineId": "john-deere-6r-230-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 39,
+      "machineId": "john-deere-6r-250-2022-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 40,
+      "machineId": "john-deere-7r-210-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 41,
+      "machineId": "john-deere-7r-230-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 42,
+      "machineId": "john-deere-7r-250-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 43,
+      "machineId": "john-deere-7r-270-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 44,
+      "machineId": "john-deere-7r-290-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 45,
+      "machineId": "john-deere-7r-310-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 46,
+      "machineId": "john-deere-7r-330-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 47,
+      "machineId": "john-deere-7r-350-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 48,
+      "machineId": "john-deere-8r-230-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 49,
+      "machineId": "john-deere-8r-250-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 50,
+      "machineId": "john-deere-8r-280-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 51,
+      "machineId": "john-deere-8r-310-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 52,
+      "machineId": "john-deere-8r-340-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 53,
+      "machineId": "john-deere-8r-370-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 54,
+      "machineId": "john-deere-8r-410-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 55,
+      "machineId": "john-deere-8r-440-2027-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 56,
+      "machineId": "john-deere-8r-490-2027-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 57,
+      "machineId": "john-deere-8r-540-2027-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 58,
+      "machineId": "john-deere-8rt-310-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 59,
+      "machineId": "john-deere-8rt-340-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 60,
+      "machineId": "john-deere-8rt-370-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 61,
+      "machineId": "john-deere-8rt-410-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 62,
+      "machineId": "john-deere-8rx-310-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 63,
+      "machineId": "john-deere-8rx-340-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 64,
+      "machineId": "john-deere-8rx-370-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 65,
+      "machineId": "john-deere-8rx-410-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 66,
+      "machineId": "john-deere-8rx-440-2027-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 67,
+      "machineId": "john-deere-8rx-490-2027-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 68,
+      "machineId": "john-deere-8rx-540-2027-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 69,
+      "machineId": "john-deere-9r-390-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 70,
+      "machineId": "john-deere-9r-440-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 71,
+      "machineId": "john-deere-9r-490-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 72,
+      "machineId": "john-deere-9r-540-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 73,
+      "machineId": "john-deere-9r-590-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 74,
+      "machineId": "john-deere-9r-640-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 75,
+      "machineId": "john-deere-9rt-490-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 76,
+      "machineId": "john-deere-9rt-540-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 77,
+      "machineId": "john-deere-9rt-590-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 78,
+      "machineId": "john-deere-9rx-490-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 79,
+      "machineId": "john-deere-9rx-540-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 80,
+      "machineId": "john-deere-9rx-590-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 81,
+      "machineId": "john-deere-9rx-640-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 82,
+      "machineId": "john-deere-9rx-710-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 83,
+      "machineId": "john-deere-9rx-770-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 84,
+      "machineId": "john-deere-9rx-830-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 85,
+      "machineId": "case-ih-farmall-70jx-2017-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 86,
+      "machineId": "case-ih-farmall-75jx-2017-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 87,
+      "machineId": "case-ih-farmall-80jx-2017-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 88,
+      "machineId": "case-ih-farmall-90jx-2017-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 89,
+      "machineId": "case-ih-farmall-100jx-2017-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 90,
+      "machineId": "case-ih-farmall-110jx-2017-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 91,
+      "machineId": "case-ih-farmall-100c-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 92,
+      "machineId": "case-ih-farmall-120c-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 93,
+      "machineId": "case-ih-maxxum-110-2013-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 94,
+      "machineId": "case-ih-maxxum-115-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 95,
+      "machineId": "case-ih-maxxum-125-2013-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 96,
+      "machineId": "case-ih-maxxum-135-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 97,
+      "machineId": "case-ih-maxxum-140-2013-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 98,
+      "machineId": "case-ih-maxxum-150-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 99,
+      "machineId": "case-ih-puma-165-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 100,
+      "machineId": "case-ih-puma-175-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 101,
+      "machineId": "case-ih-puma-185-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 102,
+      "machineId": "case-ih-puma-200-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 103,
+      "machineId": "case-ih-puma-220-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 104,
+      "machineId": "case-ih-puma-240-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 105,
+      "machineId": "case-ih-puma-260-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 106,
+      "machineId": "case-ih-optum-270-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 107,
+      "machineId": "case-ih-optum-300-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 108,
+      "machineId": "case-ih-optum-340-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 109,
+      "machineId": "case-ih-optum-360-2025-uk",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 110,
+      "machineId": "case-ih-optum-390-2025-uk",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 111,
+      "machineId": "case-ih-optum-440-2025-uk",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 112,
+      "machineId": "case-ih-magnum-265-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 113,
+      "machineId": "case-ih-magnum-295-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 114,
+      "machineId": "case-ih-magnum-325-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 115,
+      "machineId": "case-ih-magnum-355-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 116,
+      "machineId": "case-ih-magnum-355-rowtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 117,
+      "machineId": "case-ih-magnum-385-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 118,
+      "machineId": "case-ih-magnum-385-rowtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 119,
+      "machineId": "case-ih-magnum-405-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 120,
+      "machineId": "case-ih-magnum-405-rowtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 121,
+      "machineId": "case-ih-steiger-425-wheeled-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 122,
+      "machineId": "case-ih-steiger-475-wheeled-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 123,
+      "machineId": "case-ih-steiger-525-wheeled-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 124,
+      "machineId": "case-ih-steiger-555-wheeled-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 125,
+      "machineId": "case-ih-steiger-595-wheeled-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 126,
+      "machineId": "case-ih-steiger-645-wheeled-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 127,
+      "machineId": "case-ih-steiger-425-rowtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 128,
+      "machineId": "case-ih-steiger-475-rowtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 129,
+      "machineId": "case-ih-steiger-525-rowtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 130,
+      "machineId": "case-ih-steiger-475-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 131,
+      "machineId": "case-ih-steiger-525-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 132,
+      "machineId": "case-ih-steiger-555-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 133,
+      "machineId": "case-ih-steiger-595-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 134,
+      "machineId": "case-ih-steiger-645-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 135,
+      "machineId": "case-ih-steiger-715-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 136,
+      "machineId": "case-ih-steiger-785-quadtrac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 137,
+      "machineId": "massey-ferguson-5s-105-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 138,
+      "machineId": "massey-ferguson-5s-115-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 139,
+      "machineId": "massey-ferguson-5s-125-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 140,
+      "machineId": "massey-ferguson-5s-135-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 141,
+      "machineId": "massey-ferguson-5s-145-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 142,
+      "machineId": "massey-ferguson-6s-135-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 143,
+      "machineId": "massey-ferguson-6s-145-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 144,
+      "machineId": "massey-ferguson-6s-155-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 145,
+      "machineId": "massey-ferguson-6s-165-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 146,
+      "machineId": "massey-ferguson-6s-180-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 147,
+      "machineId": "massey-ferguson-7s-145-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 148,
+      "machineId": "massey-ferguson-7s-155-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 149,
+      "machineId": "massey-ferguson-7s-165-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 150,
+      "machineId": "massey-ferguson-7s-180-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 151,
+      "machineId": "massey-ferguson-7s-190-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 152,
+      "machineId": "massey-ferguson-7s-210-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 153,
+      "machineId": "massey-ferguson-8s-205-xtra-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 154,
+      "machineId": "massey-ferguson-8s-225-xtra-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 155,
+      "machineId": "massey-ferguson-8s-245-xtra-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 156,
+      "machineId": "massey-ferguson-8s-265-xtra-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 157,
+      "machineId": "massey-ferguson-8s-285-xtra-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 158,
+      "machineId": "massey-ferguson-8s-305-xtra-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 159,
+      "machineId": "massey-ferguson-9s-285-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 160,
+      "machineId": "massey-ferguson-9s-310-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 161,
+      "machineId": "massey-ferguson-9s-340-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 162,
+      "machineId": "massey-ferguson-9s-370-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 163,
+      "machineId": "massey-ferguson-9s-400-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 164,
+      "machineId": "massey-ferguson-9s-425-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 165,
+      "machineId": "fendt-614-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 166,
+      "machineId": "fendt-616-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 167,
+      "machineId": "fendt-618-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 168,
+      "machineId": "fendt-620-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 169,
+      "machineId": "fendt-720-vario-gen7-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 170,
+      "machineId": "fendt-722-vario-gen7-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 171,
+      "machineId": "fendt-724-vario-gen7-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 172,
+      "machineId": "fendt-726-vario-gen7-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 173,
+      "machineId": "fendt-728-vario-gen7-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 174,
+      "machineId": "fendt-826-vario-gen5-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 175,
+      "machineId": "fendt-829-vario-gen5-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 176,
+      "machineId": "fendt-832-vario-gen5-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 177,
+      "machineId": "fendt-930-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 178,
+      "machineId": "fendt-933-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 179,
+      "machineId": "fendt-936-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 180,
+      "machineId": "fendt-939-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 181,
+      "machineId": "fendt-942-vario-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 182,
+      "machineId": "fendt-1040-vario-gen4-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 183,
+      "machineId": "fendt-1044-vario-gen4-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 184,
+      "machineId": "fendt-1048-vario-gen4-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 185,
+      "machineId": "fendt-1052-vario-gen4-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 186,
+      "machineId": "fendt-1151-vario-mt-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 187,
+      "machineId": "fendt-1156-vario-mt-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 188,
+      "machineId": "fendt-1162-vario-mt-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 189,
+      "machineId": "fendt-1167-vario-mt-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 190,
+      "machineId": "new-holland-t5-100-dual-command-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 191,
+      "machineId": "new-holland-t5-120-dual-command-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 192,
+      "machineId": "new-holland-t5-120-auto-command-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 193,
+      "machineId": "new-holland-t5-140-auto-command-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 194,
+      "machineId": "new-holland-t6-145-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 195,
+      "machineId": "new-holland-t6-165-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 196,
+      "machineId": "new-holland-t6-180-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 197,
+      "machineId": "new-holland-t7-175-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 198,
+      "machineId": "new-holland-t7-190-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 199,
+      "machineId": "new-holland-t7-210-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 200,
+      "machineId": "new-holland-t7-225-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 201,
+      "machineId": "new-holland-t7-230-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 202,
+      "machineId": "new-holland-t7-245-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 203,
+      "machineId": "new-holland-t7-260-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 204,
+      "machineId": "new-holland-t7-270-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 205,
+      "machineId": "new-holland-t7-300-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 206,
+      "machineId": "new-holland-t7-290-hd-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 207,
+      "machineId": "new-holland-t7-315-hd-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 208,
+      "machineId": "new-holland-t7-340-hd-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 209,
+      "machineId": "new-holland-t7-360-xd-2025-uk",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 210,
+      "machineId": "new-holland-t7-390-xd-2025-uk",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 211,
+      "machineId": "new-holland-t7-440-xd-2025-uk",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 212,
+      "machineId": "new-holland-t8-320-2024-us",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 213,
+      "machineId": "new-holland-t8-350-2024-us",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 214,
+      "machineId": "new-holland-t8-380-2024-us",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 215,
+      "machineId": "new-holland-t8-410-2024-us",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 216,
+      "machineId": "new-holland-t8-435-2024-us",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 217,
+      "machineId": "new-holland-t9-470-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 218,
+      "machineId": "new-holland-t9-520-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 219,
+      "machineId": "new-holland-t9-580-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 220,
+      "machineId": "new-holland-t9-615-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 221,
+      "machineId": "new-holland-t9-655-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 222,
+      "machineId": "new-holland-t9-700-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 223,
+      "machineId": "claas-arion-410-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 224,
+      "machineId": "claas-arion-420-420-m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 225,
+      "machineId": "claas-arion-430-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 226,
+      "machineId": "claas-arion-440-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 227,
+      "machineId": "claas-arion-450-450-m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 228,
+      "machineId": "claas-arion-460-460-m-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 229,
+      "machineId": "claas-arion-470-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 230,
+      "machineId": "claas-arion-510-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 231,
+      "machineId": "claas-arion-530-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 232,
+      "machineId": "claas-arion-550-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 233,
+      "machineId": "claas-arion-570-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 234,
+      "machineId": "claas-arion-610-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 235,
+      "machineId": "claas-arion-630-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 236,
+      "machineId": "claas-arion-650-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 237,
+      "machineId": "claas-arion-660-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 238,
+      "machineId": "claas-arion-6-140-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 239,
+      "machineId": "claas-arion-6-160-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 240,
+      "machineId": "claas-arion-6-190-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 241,
+      "machineId": "claas-axion-820-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 242,
+      "machineId": "claas-axion-840-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 243,
+      "machineId": "claas-axion-860-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 244,
+      "machineId": "claas-axion-880-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 245,
+      "machineId": "claas-axion-920-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 246,
+      "machineId": "claas-axion-930-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 247,
+      "machineId": "claas-axion-930-terra-trac-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 248,
+      "machineId": "claas-axion-940-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 249,
+      "machineId": "claas-axion-950-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 250,
+      "machineId": "claas-axion-960-cmatic-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 251,
+      "machineId": "claas-axion-960-terra-trac-2024-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 252,
+      "machineId": "claas-axion-9-330-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 253,
+      "machineId": "claas-axion-9-360-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 254,
+      "machineId": "claas-axion-9-360-terra-trac-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 255,
+      "machineId": "claas-axion-9-390-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 256,
+      "machineId": "claas-axion-9-420-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 257,
+      "machineId": "claas-axion-9-450-cmatic-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 258,
+      "machineId": "claas-axion-9-450-terra-trac-2026-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 259,
+      "machineId": "claas-xerion-4500-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 260,
+      "machineId": "claas-xerion-5000-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 261,
+      "machineId": "claas-xerion-12-540-terra-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 262,
+      "machineId": "claas-xerion-12-540-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 263,
+      "machineId": "claas-xerion-12-590-terra-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 264,
+      "machineId": "claas-xerion-12-590-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 265,
+      "machineId": "claas-xerion-12-650-terra-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 266,
+      "machineId": "claas-xerion-12-650-trac-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 267,
+      "machineId": "kubota-m5091-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 268,
+      "machineId": "kubota-m5091n-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 269,
+      "machineId": "kubota-m5101n-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 270,
+      "machineId": "kubota-m5111-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 271,
+      "machineId": "kubota-m9540-2018-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 272,
+      "machineId": "kubota-m9540-dhc-ds-2018-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 273,
+      "machineId": "kubota-m100gx-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 274,
+      "machineId": "kubota-m110gx-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 275,
+      "machineId": "kubota-m126gx-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 276,
+      "machineId": "kubota-m135gx-2019-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 277,
+      "machineId": "kubota-m7-132-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 278,
+      "machineId": "kubota-m7-152-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 279,
+      "machineId": "kubota-m7-172-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 280,
+      "machineId": "deutz-fahr-6125c-rv-shift-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 281,
+      "machineId": "deutz-fahr-6135c-rv-shift-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 282,
+      "machineId": "deutz-fahr-6145g-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 283,
+      "machineId": "deutz-fahr-6165g-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 284,
+      "machineId": "deutz-fahr-6185g-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 285,
+      "machineId": "deutz-fahr-6205g-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 286,
+      "machineId": "deutz-fahr-6170-rc-shift-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 287,
+      "machineId": "deutz-fahr-6190-rc-shift-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 288,
+      "machineId": "deutz-fahr-6230-rc-shift-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 289,
+      "machineId": "deutz-fahr-6190-ttv-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 290,
+      "machineId": "deutz-fahr-6230-ttv-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 291,
+      "machineId": "deutz-fahr-8280-ttv-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 292,
+      "machineId": "deutz-fahr-9340-ttv-warrior-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 293,
+      "machineId": "valtra-a75-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 294,
+      "machineId": "valtra-a85-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 295,
+      "machineId": "valtra-a95-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 296,
+      "machineId": "valtra-a105-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 297,
+      "machineId": "valtra-a115-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 298,
+      "machineId": "valtra-g105-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 299,
+      "machineId": "valtra-g115-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 300,
+      "machineId": "valtra-g125-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 301,
+      "machineId": "valtra-g135-2025-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 302,
+      "machineId": "valtra-n135-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 303,
+      "machineId": "valtra-n155e-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 304,
+      "machineId": "valtra-n175-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 305,
+      "machineId": "valtra-t145-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 306,
+      "machineId": "valtra-t155-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 307,
+      "machineId": "valtra-t175e-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 308,
+      "machineId": "valtra-t195-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 309,
+      "machineId": "valtra-t215-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 310,
+      "machineId": "valtra-t235-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 311,
+      "machineId": "valtra-t255-2021-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 312,
+      "machineId": "valtra-s286-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 313,
+      "machineId": "valtra-s316-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 314,
+      "machineId": "valtra-s346-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 315,
+      "machineId": "valtra-s376-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 316,
+      "machineId": "valtra-s396-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    },
+    {
+      "row": 317,
+      "machineId": "valtra-s416-2023-au",
+      "code": "missing_source_url",
+      "message": "source_url is blank"
+    }
+  ],
+  "summary": {
+    "rows": 316,
+    "errors": 0,
+    "warnings": 316
+  }
+}

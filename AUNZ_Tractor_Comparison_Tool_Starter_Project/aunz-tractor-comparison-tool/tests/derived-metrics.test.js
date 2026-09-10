@@ -1,0 +1,4 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { calculatePowerToWeight } from '../scripts/derived-metrics.js';
+test('calculates 8R 410 ratio',()=>{const r=calculatePowerToWeight({max_hp:'443',unladen_weight_kg:'12700'});assert.equal(r.powerToWeightHpPerTonne,34.88);assert.equal(r.powerToWeightKwPerTonne,26.01);assert.equal(r.powerToWeightAvailable,true)});
+test('does not select from descriptive weight',()=>{const r=calculatePowerToWeight({max_hp:'539',unladen_weight_kg:'24639 (narrow), 25546 (wide)'});assert.equal(r.powerToWeightHpPerTonne,null);assert.equal(r.powerToWeightUnavailableReason,'unladen_weight_not_scalar')});
+test('does not select from option weight',()=>{const r=calculatePowerToWeight({max_hp:'280',unladen_weight_kg:'8000 / 8900'});assert.equal(r.powerToWeightAvailable,false)});

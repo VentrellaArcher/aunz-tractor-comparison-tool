@@ -1,0 +1,16 @@
+{
+  "name": "aunz-tractor-comparison-tool",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "clean": "node scripts/clean.js",
+    "validate": "node scripts/validate-data.js",
+    "build:data": "node scripts/build-data.js",
+    "build:site": "node scripts/build-site.js",
+    "build": "npm run clean && npm run validate && npm run build:data && npm run build:site",
+    "test": "node --test",
+    "dev": "npm run build && node scripts/serve.js"
+  }
+}
