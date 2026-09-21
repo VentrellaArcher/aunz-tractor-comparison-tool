@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AU/NZ Tractor Comparison Tool</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header>
+        <h1>AU/NZ Tractor Comparison Tool</h1>
+      </header>
+
+      <section aria-live="polite" aria-atomic="true">
+        <p id="status" class="status">Loading generated catalogue…</p>
+      </section>
+
+      <section id="summary" aria-live="polite"></section>
+      <section id="machine-list" aria-live="polite"></section>
+    </main>
+
+    <script type="module">
+      try {
+        const response = await fetch('./data/machines.json');
+        const machines = await response.json();
+        const statusEl = document.getElementById('status');
+        if (statusEl) {
+          statusEl.textContent = `Loaded ${machines.length} published machines`;
+        }
+      } catch (error) {
+        const statusEl = document.getElementById('status');
+        if (statusEl) {
+          statusEl.textContent = `Failed to load machine dataset: ${error.message}`;
+        }
+      }
+    </script>
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>

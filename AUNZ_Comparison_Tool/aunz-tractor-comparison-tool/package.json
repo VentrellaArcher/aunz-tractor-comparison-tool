@@ -1,0 +1,13 @@
+{
+  "name": "aunz-tractor-comparison-tool",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-data.mjs",
+    "validate": "node scripts/validate.mjs",
+    "test": "node --test",
+    "dev": "node scripts/dev-server.mjs",
+    "clean": "node -e \"const fs=require('fs');const path=require('path');['dist','artifacts'].forEach((dir)=>{if(fs.existsSync(dir)){fs.rmSync(dir,{recursive:true,force:true})}});\""
+  }
+}
