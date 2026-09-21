@@ -17,7 +17,19 @@
       </section>
 
       <section id="summary" aria-live="polite"></section>
-      <section id="machine-list" aria-live="polite"></section>
+      <section aria-labelledby="discovery-heading">
+        <h2 id="discovery-heading">Machine discovery</h2>
+        <div id="discovery"></div>
+      </section>
+      <section aria-labelledby="relationships-heading">
+        <h2 id="relationships-heading">Max HP relationships</h2>
+        <div id="relationship-results" aria-live="polite"></div>
+      </section>
+      <section aria-labelledby="comparison-heading">
+        <h2 id="comparison-heading" tabindex="-1">Detailed comparison</h2>
+        <p id="comparison-status" class="visually-hidden" role="status" aria-live="polite"></p>
+        <div id="comparison" aria-live="polite"></div>
+      </section>
     </main>
 
     <script type="module">

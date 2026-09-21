@@ -22,6 +22,49 @@ h1, h2 {
   font-weight: 600;
 }
 
+.discovery-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.control {
+  display: grid;
+  gap: 0.35rem;
+}
+
+label {
+  font-weight: 700;
+}
+
+input,
+select,
+button {
+  min-height: 2.5rem;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  font: inherit;
+  background: #fff;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.result-count {
+  font-weight: 600;
+}
+
 .error {
   color: #991b1b;
   font-weight: 600;
@@ -63,6 +106,102 @@ h1, h2 {
 
 .priority-row {
   background: #fffaf0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+caption {
+  margin-bottom: 0.5rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #f3f4f6;
+}
+
+.selected-row {
+  background: #fff7ed;
+}
+
+.comparison-controls {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.comparison-machine-heading {
+  display: grid;
+  grid-template-columns: 12rem 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem;
+}
+
+.comparison-machine-heading span {
+  font-weight: 600;
+}
+
+.comparison-scroll {
+  overflow-x: auto;
+}
+
+.comparison-scroll table {
+  min-width: 56rem;
+}
+
+.comparison-section > tr:first-child th {
+  background: #e5e7eb;
+  text-align: left;
+}
+
+.comparison-scroll td,
+.comparison-scroll th {
+  min-width: 12rem;
+}
+
+.comparison-scroll th:first-child {
+  min-width: 18rem;
+}
+
+.comparison-scroll small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #4b5563;
+}
+
+.baseline-label,
+.delta {
+  font-size: 0.8rem;
+}
+
+.comparison-note {
+  font-size: 0.9rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (max-width: 700px) {

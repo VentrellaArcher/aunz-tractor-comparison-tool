@@ -3,6 +3,7 @@ import { writeFileSync, mkdirSync, readFileSync, cpSync, existsSync } from 'node
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildMachineDataset } from './data-utils.mjs';
+import { validateCsv } from './validate.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,7 +11,14 @@ const projectRoot = path.resolve(__dirname, '..');
 const csvPath = path.join(projectRoot, 'data-source', 'machines.csv');
 const distDir = path.join(projectRoot, 'dist');
 const dataDir = path.join(distDir, 'data');
+const artifactsDir = path.join(projectRoot, 'artifacts');
 const csvText = readFileSync(csvPath, 'utf8');
+const validationReport = validateCsv(csvText);
+mkdirSync(artifactsDir, { recursive: true });
+writeFileSync(path.join(artifactsDir, 'validation-report.json'), JSON.stringify(validationReport, null, 2));
+if (validationReport.errors.length > 0) {
+  throw new Error(`Validation failed with ${validationReport.errors.length} blocking error(s).`);
+}
 const dataset = buildMachineDataset(csvText);
 
 mkdirSync(dataDir, { recursive: true });
