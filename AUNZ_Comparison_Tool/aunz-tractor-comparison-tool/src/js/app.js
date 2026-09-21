@@ -3,6 +3,7 @@ import { displaySchema, displaySections, formatDisplayValue } from './display-sc
 import { filterMachines, getFilterOptions, getSelectionOptions, resetFilters, resolveSelectedMachine, selectionLabel } from './filters.js';
 import { findRelationshipResults, RELATIONSHIP_PERCENTAGES } from './relationships.js';
 import { addMachineToComparison, calculateDelta, clearComparison, comparePowerToWeight, createComparisonState, formatDelta, removeMachineFromComparison, resolveComparisonMachines, MAX_COMPARISON_MACHINES } from './comparison.js';
+import { copyComparison, createCsvText, createOutputModel, downloadCsv, printComparison } from './comparison-output.js';
 
 const statusNode = document.getElementById('status');
 const summaryNode = document.getElementById('summary');
@@ -10,6 +11,7 @@ const discoveryNode = document.getElementById('discovery');
 const resultsNode = document.getElementById('relationship-results');
 const comparisonNode = document.getElementById('comparison');
 const comparisonStatusNode = document.getElementById('comparison-status');
+const outputStatusNode = document.getElementById('output-status');
 
 const state = {
   data: null,
@@ -39,7 +41,7 @@ function renderComparison() {
   const machines = resolveComparisonMachines(state.comparison, state.data.machines);
   const comparisonMessage = state.comparison.message ? `<p class="error" role="alert">${escapeHtml(state.comparison.message)}</p>` : '';
   if (machines.length === 0) {
-    comparisonNode.innerHTML = `${comparisonMessage}<p>No machines are currently compared.</p>`;
+    comparisonNode.innerHTML = `${comparisonMessage}<div class="comparison-actions"><button type="button" id="copy-comparison" disabled>Copy Comparison</button><button type="button" id="export-csv" disabled>Export CSV</button><button type="button" id="print-comparison" disabled>Print Comparison</button></div><p>No machines are currently compared.</p>`;
     comparisonStatusNode.textContent = state.comparison.message || 'Comparison is empty.';
     return;
   }
@@ -62,8 +64,21 @@ function renderComparison() {
   const powerNote = powerToWeight ? `<p class="comparison-note">Power-to-weight basis: ${escapeHtml(powerToWeight.powerBasis)} / ${escapeHtml(powerToWeight.weightBasis)}. hp/t delta: ${escapeHtml(formatDelta({ available: powerToWeight.available, value: powerToWeight.hpPerTonneDelta }, 'hp/t'))}; kW/t delta: ${escapeHtml(formatDelta({ available: powerToWeight.available, value: powerToWeight.kwPerTonneDelta }, 'kW/t'))}.</p>` : '';
   const headings = machines.map(machineHeading).join('');
   const headers = machines.map((machine, index) => `<th scope="col">Machine ${String.fromCharCode(65 + index)}${index === 0 ? ' (baseline)' : ''}<br>${escapeHtml(selectionLabel(machine))}</th>`).join('');
-  comparisonNode.innerHTML = `${comparisonMessage}<p role="status">${machines.length} of ${MAX_COMPARISON_MACHINES} comparison slots in use.</p><div class="comparison-controls">${headings}<button type="button" id="clear-comparison">Clear Comparison</button></div>${powerNote}<div class="comparison-scroll"><table><caption>Detailed side-by-side tractor comparison. Machine A is the baseline for deltas.</caption><thead><tr><th scope="col">Specification</th>${headers}</tr></thead>${sections}</table></div>`;
+  comparisonNode.innerHTML = `${comparisonMessage}<div class="comparison-actions"><button type="button" id="copy-comparison">Copy Comparison</button><button type="button" id="export-csv">Export CSV</button><button type="button" id="print-comparison">Print Comparison</button></div><p role="status">${machines.length} of ${MAX_COMPARISON_MACHINES} comparison slots in use.</p><div class="comparison-controls">${headings}<button type="button" id="clear-comparison">Clear Comparison</button></div>${powerNote}<div class="comparison-scroll"><table><caption>Detailed side-by-side tractor comparison. Machine A is the baseline for deltas.</caption><thead><tr><th scope="col">Specification</th>${headers}</tr></thead>${sections}</table></div>`;
   comparisonStatusNode.textContent = `${machines.length} machines are in the comparison.`;
+  const outputModel = createOutputModel(state.comparison, state.data.machines, state.data.buildInfo);
+  document.getElementById('copy-comparison').addEventListener('click', async () => {
+    const result = await copyComparison(outputModel);
+    outputStatusNode.textContent = result.message;
+  });
+  document.getElementById('export-csv').addEventListener('click', () => {
+    const result = downloadCsv(outputModel);
+    outputStatusNode.textContent = result.message;
+  });
+  document.getElementById('print-comparison').addEventListener('click', () => {
+    const result = printComparison(outputModel);
+    outputStatusNode.textContent = result.message;
+  });
   comparisonNode.querySelectorAll('.remove-comparison').forEach((button) => button.addEventListener('click', () => {
     state.comparison = removeMachineFromComparison(state.comparison, button.dataset.machineId);
     renderComparison();
