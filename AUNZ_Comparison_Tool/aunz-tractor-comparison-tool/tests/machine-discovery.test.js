@@ -46,9 +46,12 @@ test('front-end modules do not embed a machine catalogue or hard-coded filter ca
 
 test('source page exposes labelled keyboard-reachable discovery controls and a semantic results table target', () => {
   const app = readFileSync(path.join(repoRoot, 'src/js/app.js'), 'utf8');
-  for (const name of ['search', 'manufacturer', 'modelYear', 'transmission', 'topSpeed', 'cylinders', 'rearPto', 'machineId', 'relationshipPercentage']) {
-    assert.match(app, new RegExp(`name="${name}"`));
+  for (const name of ['search', 'manufacturer', 'modelYear', 'transmission', 'topSpeed', 'cylinders', 'rearPto', 'relationshipPercentage']) {
+    assert.match(app, name === 'search' || name === 'relationshipPercentage' ? new RegExp(`name="${name}"`) : new RegExp(`filterGroup\\('${name}'`));
   }
+  assert.doesNotMatch(app, /name="market"|id="machine-select"/);
+  assert.match(app, /role="combobox"/);
+  assert.match(app, /role="listbox"/);
   assert.match(app, /<table>/);
   assert.match(app, /<caption>/);
   assert.match(app, /Reset Filters/);

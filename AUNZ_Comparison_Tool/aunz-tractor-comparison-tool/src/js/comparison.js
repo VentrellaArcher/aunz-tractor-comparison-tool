@@ -77,6 +77,14 @@ export function comparePowerToWeight(baselineMachine, candidateMachine) {
 
 export function formatDelta(delta, unit) {
   if (!delta?.available) return '—';
-  const sign = delta.value > 0 ? '+' : '';
-  return `${sign}${delta.value} ${unit ?? ''}`.trim();
+  const rounded = Math.round((delta.value + Number.EPSILON) * 100) / 100;
+  const sign = rounded > 0 ? '+' : '';
+  return `${sign}${rounded.toFixed(2)} ${unit ?? ''}`.trim();
+}
+
+export function deltaDirection(delta) {
+  if (!delta?.available) return 'delta-neutral';
+  if (delta.value > 0) return 'delta-positive';
+  if (delta.value < 0) return 'delta-negative';
+  return 'delta-neutral';
 }

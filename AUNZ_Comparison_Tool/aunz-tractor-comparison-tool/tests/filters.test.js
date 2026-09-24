@@ -23,6 +23,13 @@ test('scalar, helper-array and combined filters use AND logic', () => {
   assert.equal(filterMachines(machines, { manufacturer: 'Unknown' }).length, 0);
 });
 
+test('multi-select filters use OR within a group and AND across groups', () => {
+  assert.equal(filterMachines(machines, { manufacturer: ['John Deere', 'Massey Ferguson'] }).length, 3);
+  assert.equal(filterMachines(machines, { transmission: ['CVT / IVT / EVT', 'Mechanical / Shuttle'] }).length, 3);
+  assert.equal(filterMachines(machines, { manufacturer: ['John Deere', 'Massey Ferguson'], cylinders: ['6'] }).length, 2);
+  assert.equal(filterMachines(machines, { manufacturer: ['John Deere'] }).length, 2);
+});
+
 test('filtering preserves complete records and does not mutate the source array', () => {
   const original = JSON.stringify(machines);
   const result = filterMachines(machines, { manufacturer: 'John Deere' });
@@ -35,7 +42,7 @@ test('filter options are derived, unique and deterministically sorted', () => {
   const options = getFilterOptions(machines);
   assert.deepEqual(options.manufacturers, ['John Deere', 'Massey Ferguson']);
   assert.deepEqual(options.modelYears, ['2025', '2024']);
-  assert.deepEqual(options.topSpeed, ['50', '40']);
+  assert.deepEqual(options.topSpeed, ['30', '40', '50', '60', '70']);
   assert.deepEqual(options.rearPto, ['540', '1000']);
 });
 

@@ -47,11 +47,11 @@ test('IDs resolve to complete runtime machine objects without mutation', () => {
 
 test('safe numeric deltas use Machine A as baseline with neutral formatting', () => {
   assert.deepEqual(calculateDelta(deltaField, machines[0], machines[1]), { available: true, reason: null, value: 20 });
-  assert.equal(formatDelta(calculateDelta(deltaField, machines[0], machines[1]), 'hp'), '+20 hp');
-  assert.equal(formatDelta(calculateDelta(deltaField, machines[1], machines[0]), 'hp'), '-20 hp');
+  assert.equal(formatDelta(calculateDelta(deltaField, machines[0], machines[1]), 'hp'), '+20.00 hp');
+  assert.equal(formatDelta(calculateDelta(deltaField, machines[1], machines[0]), 'hp'), '-20.00 hp');
   assert.equal(formatDelta(calculateDelta(textField, machines[0], machines[3]), 'hp'), '—');
   assert.equal(calculateDelta(textField, machines[0], machines[1]).available, false);
-  assert.equal(formatDelta(calculateDelta(deltaField, machines[0], machines[0]), 'hp'), '0 hp');
+  assert.equal(formatDelta(calculateDelta(deltaField, machines[0], machines[0]), 'hp'), '0.00 hp');
 });
 
 test('power-to-weight compares generated values only when both machines are available', () => {

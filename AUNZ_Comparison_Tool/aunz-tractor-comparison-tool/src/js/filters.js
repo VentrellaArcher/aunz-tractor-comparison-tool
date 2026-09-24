@@ -1,24 +1,38 @@
 export const DEFAULT_FILTERS = Object.freeze({
   search: '',
-  manufacturer: '',
-  modelYear: '',
-  transmission: '',
+  manufacturer: [],
+  modelYear: [],
+  transmission: [],
   topSpeed: '',
-  cylinders: '',
-  rearPto: '',
-  market: ''
+  cylinders: [],
+  rearPto: []
 });
+
+export const TOP_SPEED_THRESHOLDS = [30, 40, 50, 60, 70];
 
 function normalized(value) {
   return value == null ? '' : String(value).trim().toLowerCase();
 }
 
 function matchesScalar(value, selected) {
-  return !selected || normalized(value) === normalized(selected);
+  const selections = Array.isArray(selected) ? selected : [selected];
+  return !selections.filter(Boolean).length || selections.some((item) => normalized(value) === normalized(item));
 }
 
 function matchesList(values, selected) {
-  return !selected || (Array.isArray(values) && values.some((value) => normalized(value) === normalized(selected)));
+  const selections = Array.isArray(selected) ? selected.filter(Boolean) : [selected].filter(Boolean);
+  return !selections.length || (Array.isArray(values) && selections.some((selectedValue) => values.some((value) => normalized(value) === normalized(selectedValue))));
+}
+
+function cleanScalarNumber(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  if (typeof value !== 'string' || !/^\s*\d+(?:\.\d+)?\s*$/.test(value)) return null;
+  const number = Number(value.trim());
+  return Number.isFinite(number) ? number : null;
+}
+
+function topSpeedValue(machine) {
+  return cleanScalarNumber(machine?.top_speed_kmh);
 }
 
 export function searchMachines(machines, search) {
@@ -35,10 +49,9 @@ export function filterMachines(machines, filters = DEFAULT_FILTERS) {
       && matchesScalar(machine.manufacturer, active.manufacturer)
       && matchesScalar(machine.model_year, active.modelYear)
       && matchesList(machine.transmission_filter_tags, active.transmission)
-      && matchesScalar(machine.top_speed_filter ?? machine.top_speed_kmh, active.topSpeed)
+      && (!active.topSpeed || (topSpeedValue(machine) !== null && topSpeedValue(machine) >= Number(active.topSpeed)))
       && matchesScalar(machine.cylinders_filter ?? machine.number_of_cylinders, active.cylinders)
-      && matchesList(machine.rear_pto_filter_tags, active.rearPto)
-      && matchesScalar(machine.market, active.market);
+      && matchesList(machine.rear_pto_filter_tags, active.rearPto);
   });
 }
 
@@ -52,10 +65,9 @@ export function getFilterOptions(machines) {
     manufacturers: sortedUnique(machines.map((machine) => machine.manufacturer)),
     modelYears: sortedUnique(machines.map((machine) => machine.model_year), true),
     transmission: sortedUnique(machines.flatMap((machine) => machine.transmission_filter_tags ?? [])),
-    topSpeed: sortedUnique(machines.map((machine) => machine.top_speed_filter ?? machine.top_speed_kmh), true),
+    topSpeed: TOP_SPEED_THRESHOLDS.map((value) => String(value)),
     cylinders: sortedUnique(machines.map((machine) => machine.cylinders_filter ?? machine.number_of_cylinders), true),
     rearPto: sortedUnique(machines.flatMap((machine) => machine.rear_pto_filter_tags ?? [])),
-    market: sortedUnique(machines.map((machine) => machine.market))
   };
 }
 

@@ -38,7 +38,7 @@ test('invalid and missing Max HP are excluded or return unavailable state', () =
 });
 
 test('percentage validation is explicit and rejects invalid values', () => {
-  assert.deepEqual(RELATIONSHIP_PERCENTAGES, [0, 5, 10, 15, 20]);
+  assert.deepEqual(RELATIONSHIP_PERCENTAGES, [0, 5, 10, 15, 20, 30, 50, 100]);
   assert.equal(validateRelationshipPercentage('10'), 10);
   assert.throws(() => validateRelationshipPercentage(-5), /must be one of/);
   assert.throws(() => validateRelationshipPercentage('x'), /must be one of/);

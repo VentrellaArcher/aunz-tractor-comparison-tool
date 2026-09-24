@@ -19,8 +19,8 @@ test('clean build creates comparison module and preserves generated data', () =>
 test('application wires comparison actions and accessible comparison region', () => {
   const app = readFileSync(path.join(repoRoot, 'src/js/app.js'), 'utf8');
   const html = readFileSync(path.join(repoRoot, 'src/index.html'), 'utf8');
-  assert.match(app, /compare-candidate/);
-  assert.match(app, /Compare with selected machine/);
+  assert.match(app, /toggleRelationshipRow/);
+  assert.match(app, /aria-label="Add/);
   assert.match(app, /Clear Comparison/);
   assert.match(app, /displaySchema/);
   assert.match(app, /calculateDelta/);

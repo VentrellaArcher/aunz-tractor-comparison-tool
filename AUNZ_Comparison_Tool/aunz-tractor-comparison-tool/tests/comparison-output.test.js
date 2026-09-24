@@ -38,8 +38,8 @@ test('plain text is structured, complete, ordered and free of visible HTML', () 
   assert.ok(text.indexOf('Alpha') < text.indexOf('Beta'));
   assert.match(text, /Source and review/);
   assert.match(text, /Power-to-weight ratio/);
-  assert.match(text, /maxHp/);
-  assert.match(text, /\+20 hp/);
+  assert.doesNotMatch(text, /Power basis|Weight basis|Unavailable reason/);
+  assert.match(text, /\+20\.00 hp/);
   assert.doesNotMatch(text, /<[^>]+>/);
   assert.doesNotMatch(text, /Copy Comparison|Export CSV|Print Comparison/);
 });
