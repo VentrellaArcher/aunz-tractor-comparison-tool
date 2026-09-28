@@ -1,0 +1,74 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool
+    steps:
+      - name: Check out exact commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Validate human-maintained CSV
+        run: npm run validate
+
+      - name: Build generated site
+        env:
+          BUILD_VERSION: ${{ github.sha }}
+          BUILD_DATE: ${{ github.event.head_commit.timestamp || '' }}
+        run: npm run build
+
+      - name: Smoke-test deployment artifact
+        run: npm run smoke
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool/dist
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy validated dist artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

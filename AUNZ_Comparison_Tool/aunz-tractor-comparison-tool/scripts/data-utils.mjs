@@ -175,11 +175,11 @@ export function buildMachineDataset(csvText) {
     modelYears,
     filterOptions,
     buildInfo: {
-      buildDate: new Date().toISOString(),
+      buildDate: process.env.BUILD_DATE || new Date().toISOString(),
       sourceRowCount: dataRows.length,
       publishedRecordCount: publishedMachines.length,
       powerToWeightAvailableCount: publishedMachines.filter((machine) => machine.powerToWeightAvailable).length,
-      version: 'local-build'
+      version: process.env.BUILD_VERSION || process.env.GITHUB_SHA || 'local-build'
     }
   };
 }

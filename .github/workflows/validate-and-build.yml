@@ -1,0 +1,65 @@
+name: Validate and build
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool
+    steps:
+      - name: Check out exact commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run tests before build
+        run: npm test
+
+      - name: Validate human-maintained CSV
+        run: npm run validate
+
+      - name: Build generated site
+        env:
+          BUILD_VERSION: ${{ github.sha }}
+          BUILD_DATE: ${{ github.event.head_commit.timestamp || '' }}
+        run: npm run build
+
+      - name: Smoke-test assembled dist
+        run: npm run smoke
+
+      - name: Run tests after build
+        run: npm test
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report-${{ github.run_id }}
+          path: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool/artifacts/validation-report.json
+          if-no-files-found: error
+
+      - name: Upload dist inspection artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.run_id }}
+          path: AUNZ_Comparison_Tool/aunz-tractor-comparison-tool/dist
+          if-no-files-found: error

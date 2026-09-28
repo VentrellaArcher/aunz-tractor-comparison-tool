@@ -13,6 +13,22 @@
 
 ---
 
+# 21. Workflow continuation update (2026-09-28)
+
+This section supersedes stale counts and pending-work statements elsewhere in this handoff for the human-maintained CSV, deployment and new-manufacturer workflow milestone.
+
+- The real source CSV remains human-maintained and unchanged.
+- Current source baseline: 316 data rows, 316 published rows, 0 unpublished rows, 9 manufacturers, 11 model years.
+- Current Market values: AU 305, UK 6, US 5. The schema currently lists AU/NZ controlled values while the source contains UK/US; this remains an unresolved product-owner decision documented in `docs/MARKET_POLICY_DECISION_REQUIRED.md`.
+- Current relationship bands are 0%, 5%, 10%, 15%, 20%, 30%, 50% and 100%.
+- Current automated suite: 99 passing tests before this workflow milestone; the workflow milestone adds fixture and governance coverage and must be rerun.
+- `scripts/smoke-test-dist.mjs` and `npm run smoke` validate the assembled deployment artifact.
+- `.github/workflows/validate-and-build.yml` validates pull requests and main pushes without deploying.
+- `.github/workflows/deploy-pages.yml` gates a main-branch Pages deployment on tests, validation, build and smoke.
+- Synthetic JCB fixtures are test-only and must never enter the real CSV, generated production catalogue or deployment artifact.
+- GitHub Pages settings and a real live deployment remain externally unverified; do not describe deployment as operational until a real workflow run and live URL are checked.
+- Human maintenance, release and rollback instructions are in `docs/DATA_MAINTENANCE_GUIDE.md` and `docs/RELEASE_AND_ROLLBACK_GUIDE.md`.
+
 # 1. Purpose of this document
 
 This document is the authoritative project handoff for resuming work after a break. It is designed to be given directly to an AI coding assistant, especially GitHub Copilot in Visual Studio Code.
