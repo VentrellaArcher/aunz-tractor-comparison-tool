@@ -51,10 +51,6 @@ export function valueMarkup(text, missing) {
   return `<span class="value is-missing"><span aria-hidden="true">${escapeHtml(text)}</span><span class="visually-hidden">No published value</span></span>`;
 }
 
-export function focusKeyAttribute(key) {
-  return `data-focus-key="${escapeHtml(key)}"`;
-}
-
 // Used where a dash means "not applicable" (for example the selected machine's own difference), not "unpublished".
 export function notApplicableMarkup(text) {
   return `<span class="value is-missing"><span aria-hidden="true">—</span><span class="visually-hidden">${escapeHtml(text)}</span></span>`;

@@ -630,6 +630,7 @@ window.addEventListener('afterprint', () => { document.title = DEFAULT_TITLE; })
 async function openHelp() {
   const { helpMarkup } = await import('./view-help.js');
   els.help.innerHTML = helpMarkup();
+  els.help.setAttribute('aria-labelledby', 'help-title');
   if (typeof els.help.showModal === 'function') els.help.showModal();
   else els.help.setAttribute('open', '');
 }

@@ -125,6 +125,12 @@ test('responsive layout, motion, contrast and print preferences are all handled'
   assert.match(css, /env\(safe-area-inset-bottom\)/);
 });
 
+test('the page reflows on very narrow screens instead of forcing a minimum width', () => {
+  assert.doesNotMatch(css, /(?:^|\n)(?:html|body)\s*\{[^}]*min-width/, 'a fixed page width breaks 400% zoom and foldable cover screens');
+  assert.match(css, /@media \(max-width: 26rem\) \{[^}]*\.app-bar \{/, 'the workflow bar tightens on phones so Help stays visible');
+  assert.match(css, /@media \(max-width: 21rem\) \{\s*\.steps a\[aria-current\] \.step-label/, 'the current step label yields on the narrowest screens');
+});
+
 test('interactive controls keep a comfortable touch target', () => {
   assert.match(css, /\.btn \{[^}]*min-height: 2\.75rem/);
   assert.match(css, /\.compare-toggle \{[^}]*min-width: 2\.75rem; min-height: 2\.75rem/);

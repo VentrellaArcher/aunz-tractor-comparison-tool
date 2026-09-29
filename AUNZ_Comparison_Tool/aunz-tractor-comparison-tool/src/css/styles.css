@@ -66,7 +66,6 @@
 [hidden] { display: none !important; }
 
 html {
-  min-width: 20rem;
   overflow-x: clip;
   background: var(--color-page);
   scroll-behavior: smooth;
@@ -77,7 +76,6 @@ html {
 
 body {
   margin: 0;
-  min-width: 20rem;
   background: var(--color-page);
   color: var(--color-text);
   font-family: var(--font-sans);
@@ -502,6 +500,19 @@ body.has-tray .toasts { bottom: calc(var(--tray-h) + 0.75rem); }
   .relationship-summary { padding: var(--space-4); }
   .machine-highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .result-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Phones: the Compare step shows a label and a count, so tighten the workflow bar to keep Help on screen. */
+@media (max-width: 26rem) {
+  .app-bar { gap: var(--space-1); padding-inline: 0.25rem; }
+  .steps { gap: 0; }
+  .steps a { gap: 0.35rem; padding: 0 0.4rem 0 0.35rem; }
+  .app-bar-actions { gap: 0; }
+  .app-bar-actions .btn { min-width: 2.5rem; padding: 0 0.35rem; }
+}
+
+@media (max-width: 21rem) {
+  .steps a[aria-current] .step-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 }
 
 /* ---------- Accessibility preferences ---------- */
