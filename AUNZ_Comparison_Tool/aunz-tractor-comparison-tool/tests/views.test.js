@@ -143,7 +143,8 @@ test('discovery markup exposes a labelled combobox, the six documented filter gr
   assert.match(html, /<ul id="machine-suggestions" class="suggestions" role="listbox"/);
   assert.equal([...html.matchAll(/<fieldset class="filter-group"/g)].length, FILTER_GROUPS.length);
   assert.match(html, /id="reset-filters"[^>]*data-action="reset-filters"[^>]*hidden/);
-  assert.match(html, /role="group" aria-labelledby="onboarding-title"/);
+  assert.match(html, /<details class="onboarding" open><summary>/);
+  assert.match(discoveryMarkup({ options: getFilterOptions(fleet), counts: getFacetCounts(fleet), filters: resetFilters(), inputValue: '', hasSelection: false, filtersOpen: false, onboardingVisible: true, onboardingOpen: false, eligibleCount: fleet.length }), /<details class="onboarding"><summary>/);
   assert.doesNotMatch(html, /<aside/);
   assert.match(html, /<details class="filter-panel" id="filter-panel" open>/);
 });
@@ -219,7 +220,7 @@ test('the tray lists every machine with a labelled remove control and says when 
 });
 
 test('page furniture formats dates, year ranges and facts without inventing values', () => {
-  assert.equal(formatBuildDate('2026-09-29T12:00:00.000Z', { timeZone: 'UTC' }), '29 Sept 2026');
+  assert.match(formatBuildDate('2026-09-29T12:00:00.000Z', { timeZone: 'UTC' }), /^29 Sep(?:t)? 2026$/, 'month abbreviation differs between ICU versions');
   assert.equal(formatBuildDate(''), null);
   assert.equal(formatBuildDate('not a date'), null);
   assert.equal(yearRange([2013, 2027, 2025]), '2013–2027');

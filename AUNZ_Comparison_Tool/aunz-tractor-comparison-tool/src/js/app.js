@@ -176,6 +176,7 @@ function renderDiscoveryFull() {
     hasSelection: Boolean(selected || filters.search),
     filtersOpen: app.ui.filtersOpen,
     onboardingVisible: app.ui.onboardingVisible,
+    onboardingOpen: app.ui.wide,
     eligibleCount: eligible.length
   });
 }
@@ -640,6 +641,13 @@ function closeHelp() {
 
 els.help.addEventListener('click', (event) => {
   if (event.target === els.help) closeHelp();
+});
+
+// Explicit so Escape closes the window the same way in every browser.
+els.help.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  event.preventDefault();
+  closeHelp();
 });
 
 /* ---------- Whole-page refresh ---------- */

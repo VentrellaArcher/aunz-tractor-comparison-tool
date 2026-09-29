@@ -16,10 +16,20 @@ function assertShape(label, payload, expectedType, resourceId) {
   }
 }
 
+export const PREFETCH_KEY = '__catalogueRequest';
+
+// index.html starts the machines request early; use that response once rather than downloading the file again.
+function takePrefetchedRequest(fetchImpl, key) {
+  if (key !== 'machines' || fetchImpl !== globalThis.fetch) return null;
+  const request = globalThis[PREFETCH_KEY];
+  delete globalThis[PREFETCH_KEY];
+  return request ?? null;
+}
+
 async function fetchResource(fetchImpl, key, resourcePath) {
   let response;
   try {
-    response = await fetchImpl(resourcePath);
+    response = (await takePrefetchedRequest(fetchImpl, key)) ?? (await fetchImpl(resourcePath));
   } catch (error) {
     throw new Error(`Failed to load ${key} from ${resourcePath}: ${error?.message || 'Network request failed'}`);
   }

@@ -64,22 +64,22 @@ export function suggestionsMarkup(machines, activeIndex, total = machines.length
   return machines.map((machine, index) => `<li id="suggestion-${index}" role="option" class="suggestion" aria-selected="${index === activeIndex}" data-action="select-suggestion" data-machine-id="${escapeHtml(machine.machine_id)}"><span class="suggestion-name">${escapeHtml(machineName(machine))}</span><span class="suggestion-meta">${escapeHtml(suggestionMeta(machine))}</span></li>`).join('') + (total > machines.length ? `<li class="suggestion-more" role="presentation">Showing ${machines.length} of ${total}. Keep typing to narrow the list.</li>` : '');
 }
 
-export function onboardingMarkup() {
-  return `<div class="onboarding" role="group" aria-labelledby="onboarding-title"><div class="onboarding-copy"><h3 id="onboarding-title">How it works</h3><ol class="onboarding-steps"><li><strong>Pick a machine.</strong> Search by brand or model, or narrow the list with filters.</li><li><strong>See what is in range.</strong> Machines with a similar Max HP appear in the next section.</li><li><strong>Compare up to four.</strong> Add machines, then review differences, copy, export or print.</li></ol></div><button type="button" class="btn btn-secondary" data-action="dismiss-onboarding">Got it</button></div>`;
+export function onboardingMarkup(open = true) {
+  return `<details class="onboarding"${open ? ' open' : ''}><summary><span class="onboarding-title">How it works</span><span class="onboarding-hint">Three quick steps</span></summary><div class="onboarding-body"><ol class="onboarding-steps"><li><strong>Pick a machine.</strong> Search by brand or model, or narrow the list with filters.</li><li><strong>See what is in range.</strong> Machines with a similar Max HP appear in the next section.</li><li><strong>Compare up to four.</strong> Add machines, then review differences, copy, export or print.</li></ol><button type="button" class="btn btn-secondary" data-action="dismiss-onboarding">Got it</button></div></details>`;
 }
 
 export function discoveryMarkup(context) {
-  const { options, counts, filters, inputValue, hasSelection, filtersOpen, onboardingVisible } = context;
-  return `${onboardingVisible ? onboardingMarkup() : ''}<form id="discovery-form" class="discovery-form" role="search" novalidate>
+  const { options, counts, filters, inputValue, hasSelection, filtersOpen, onboardingVisible, onboardingOpen = filtersOpen } = context;
+  return `${onboardingVisible ? onboardingMarkup(onboardingOpen) : ''}<form id="discovery-form" class="discovery-form" role="search" novalidate>
       <div class="control primary-machine">
         <label for="search">Primary machine</label>
         <div class="combobox-wrap">
           <span class="field-icon">${icon('search')}</span>
-          <input id="search" name="search" type="search" role="combobox" aria-autocomplete="list" aria-controls="machine-suggestions" aria-expanded="false" aria-describedby="search-hint search-note" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Search by brand or model, for example 8R 340" value="${escapeHtml(inputValue)}" />
+          <input id="search" name="search" type="search" role="combobox" aria-autocomplete="list" aria-controls="machine-suggestions" aria-expanded="false" aria-describedby="search-hint search-note" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Search brand or model" value="${escapeHtml(inputValue)}" />
           <button type="button" id="clear-machine" class="combobox-clear" data-action="clear-machine" aria-label="Clear selected machine"${hasSelection ? '' : ' hidden'}>${icon('close')}</button>
           <ul id="machine-suggestions" class="suggestions" role="listbox" aria-label="Matching machines" hidden></ul>
         </div>
-        <p id="search-hint" class="hint">Choose the machine to compare against. Filters below narrow which machines you can choose. Press <kbd>/</kbd> to jump here.</p>
+        <p id="search-hint" class="hint">Choose the machine to compare against, for example 8R 340. Filters below narrow which machines you can choose. Press <kbd>/</kbd> to jump here.</p>
         <p id="search-note" class="search-note" role="status"></p>
       </div>
       <details class="filter-panel" id="filter-panel"${filtersOpen ? ' open' : ''}>

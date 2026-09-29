@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_RESOURCE_PATHS, isRenderableMachine, loadRuntimeData, sanitizeMachines } from '../src/js/data-loader.js';
+import { DEFAULT_RESOURCE_PATHS, PREFETCH_KEY, isRenderableMachine, loadRuntimeData, sanitizeMachines } from '../src/js/data-loader.js';
 
 function okResponse(payload) {
   return { ok: true, status: 200, statusText: 'OK', json: async () => payload };
@@ -46,6 +46,42 @@ test('a file that is not valid JSON produces an actionable message', async () =>
 test('shape checks still run in a fixed order after the parallel load', async () => {
   const fetchImpl = async () => okResponse({ not: 'an array' });
   await assert.rejects(() => loadRuntimeData(fetchImpl), /machines/i);
+});
+
+test('an early page request for the catalogue is reused once instead of downloading it twice', async () => {
+  const original = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (resource) => { calls.push(resource); return okResponse(payloads[resource]); };
+  globalThis[PREFETCH_KEY] = Promise.resolve(okResponse(payloads['./data/machines.json']));
+  try {
+    const data = await loadRuntimeData();
+    assert.equal(data.machines.length, 1);
+    assert.equal(calls.includes('./data/machines.json'), false, 'machines.json was not requested again');
+    assert.equal(calls.length, 4, 'the other resources are still loaded');
+    assert.equal(PREFETCH_KEY in globalThis, false, 'the early request is consumed once');
+    await loadRuntimeData();
+    assert.equal(calls.includes('./data/machines.json'), true, 'a retry downloads it normally');
+  } finally {
+    globalThis.fetch = original;
+    delete globalThis[PREFETCH_KEY];
+  }
+});
+
+test('a failed early request falls back to a normal download, and injected fetches ignore it', async () => {
+  const original = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (resource) => { calls.push(resource); return okResponse(payloads[resource]); };
+  globalThis[PREFETCH_KEY] = Promise.resolve(null);
+  try {
+    assert.equal((await loadRuntimeData()).machines.length, 1);
+    assert.equal(calls.includes('./data/machines.json'), true);
+    globalThis[PREFETCH_KEY] = Promise.resolve(okResponse([{ machine_id: 'wrong', machine: 'Wrong', manufacturer: 'Demo' }]));
+    const injected = await loadRuntimeData(async (resource) => okResponse(payloads[resource]));
+    assert.equal(injected.machines[0].machine_id, 'a', 'a custom fetch never uses the page request');
+  } finally {
+    globalThis.fetch = original;
+    delete globalThis[PREFETCH_KEY];
+  }
 });
 
 test('records the interface cannot identify are skipped instead of breaking rendering', () => {

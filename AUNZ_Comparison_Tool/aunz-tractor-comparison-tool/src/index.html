@@ -85,8 +85,8 @@
     <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title"></dialog>
 
     <script type="module">
-      // Starts the catalogue request while the app modules load; the app then reads it from the browser cache.
-      fetch('./data/machines.json').catch(() => {});
+      // Starts the catalogue request while the app modules load; the app reuses it instead of downloading the file again.
+      globalThis.__catalogueRequest = fetch('./data/machines.json').catch(() => null);
     </script>
     <script type="module" src="./js/app.js"></script>
   </body>

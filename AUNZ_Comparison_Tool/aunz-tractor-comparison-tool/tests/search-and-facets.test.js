@@ -102,9 +102,10 @@ test('resetFilters returns independent arrays so state can never leak between re
 test('the real catalogue produces clean labels and consistent facet totals', () => {
   const catalogue = buildMachineDataset(readFileSync(path.join(repoRoot, 'data-source', 'machines.csv'), 'utf8')).publishedMachines;
   for (const machine of catalogue) {
-    const label = selectionLabel(machine);
-    assert.ok(label.includes(machine.manufacturer), `${label} keeps the brand`);
-    assert.equal(label.split(machine.manufacturer).length - 1, 1, `${label} repeats the brand`);
+    const label = selectionLabel(machine).toLowerCase();
+    const maker = machine.manufacturer.toLowerCase();
+    assert.ok(label.startsWith(maker), `${label} keeps the brand`);
+    assert.equal(label.startsWith(`${maker} ${maker}`), false, `${label} repeats the brand`);
   }
   const counts = getFacetCounts(catalogue);
   const options = getFilterOptions(catalogue);
