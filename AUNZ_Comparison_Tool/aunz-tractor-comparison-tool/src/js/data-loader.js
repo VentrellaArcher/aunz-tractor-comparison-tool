@@ -16,18 +16,27 @@ function assertShape(label, payload, expectedType, resourceId) {
   }
 }
 
-export async function loadRuntimeData(fetchImpl = fetch) {
-  const resources = {};
-
-  for (const [key, resourcePath] of Object.entries(DEFAULT_RESOURCE_PATHS)) {
-    const response = await fetchImpl(resourcePath);
-    if (!response || !response.ok) {
-      throw new Error(`Failed to load ${key} from ${resourcePath}: ${response?.statusText || 'Request failed'}`);
-    }
-
-    const payload = await response.json();
-    resources[key] = payload;
+async function fetchResource(fetchImpl, key, resourcePath) {
+  let response;
+  try {
+    response = await fetchImpl(resourcePath);
+  } catch (error) {
+    throw new Error(`Failed to load ${key} from ${resourcePath}: ${error?.message || 'Network request failed'}`);
   }
+  if (!response || !response.ok) {
+    throw new Error(`Failed to load ${key} from ${resourcePath}: ${response?.statusText || 'Request failed'}`);
+  }
+  try {
+    return await response.json();
+  } catch {
+    throw new Error(`Failed to read ${key} from ${resourcePath}: the file is not valid JSON.`);
+  }
+}
+
+export async function loadRuntimeData(fetchImpl = fetch) {
+  const entries = Object.entries(DEFAULT_RESOURCE_PATHS);
+  const payloads = await Promise.all(entries.map(([key, resourcePath]) => fetchResource(fetchImpl, key, resourcePath)));
+  const resources = Object.fromEntries(entries.map(([key], index) => [key, payloads[index]]));
 
   assertShape('machines', resources.machines, 'array', 'machines.json');
   assertShape('manufacturers', resources.manufacturers, 'array', 'manufacturers.json');
@@ -44,4 +53,29 @@ export async function loadRuntimeData(fetchImpl = fetch) {
     loadedFromGeneratedData: true,
     resourcePaths: { ...DEFAULT_RESOURCE_PATHS }
   };
+}
+
+// A record the interface cannot identify or label is skipped rather than allowed to break rendering.
+export function isRenderableMachine(record) {
+  return record !== null
+    && typeof record === 'object'
+    && !Array.isArray(record)
+    && typeof record.machine_id === 'string'
+    && record.machine_id.trim() !== ''
+    && typeof record.machine === 'string'
+    && record.machine.trim() !== ''
+    && typeof record.manufacturer === 'string'
+    && record.manufacturer.trim() !== '';
+}
+
+export function sanitizeMachines(records) {
+  const seen = new Set();
+  const usable = [];
+  for (const record of records) {
+    if (isRenderableMachine(record) && !seen.has(record.machine_id)) {
+      seen.add(record.machine_id);
+      usable.push(record);
+    }
+  }
+  return { machines: usable, skipped: records.length - usable.length };
 }
