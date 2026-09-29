@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildMachineDataset } from '../scripts/data-utils.mjs';
-import { filterMachines, getFacetCounts, getFilterOptions, machineModel, machineName, resetFilters, searchMachines, selectionLabel, suggestSearchCorrection } from '../src/js/filters.js';
+import { filterMachines, getFacetCounts, getFilterOptions, machineModel, machineName, rankBySearch, resetFilters, searchMachines, selectionLabel, suggestSearchCorrection } from '../src/js/filters.js';
 import { fleet, makeMachine } from './fixtures/fleet.js';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -80,6 +80,17 @@ test('facet counts respect the search text and ignore unusable values', () => {
   assert.equal(counts.manufacturer.Demo, 1);
   assert.equal(counts.modelYear.null, undefined);
   assert.equal(counts.topSpeed['30'], 0, 'descriptive top speeds are not counted');
+});
+
+test('suggestions rank names that start with the typed text ahead of looser matches', () => {
+  const machines = [
+    makeMachine({ machine_id: 'later', manufacturer: 'Zeta', machine: 'Zeta Big John 5' }),
+    makeMachine({ machine_id: 'starts', manufacturer: 'John Deere', machine: 'John Deere 5050E' }),
+    makeMachine({ machine_id: 'other', manufacturer: 'Other', machine: 'Other 9' })
+  ];
+  assert.deepEqual(ids(rankBySearch(machines, 'john')), ['starts', 'later', 'other']);
+  assert.deepEqual(ids(rankBySearch(machines, '')), ['later', 'starts', 'other']);
+  assert.deepEqual(rankBySearch(machines, 'john'), rankBySearch(machines, ' JOHN '));
 });
 
 test('resetFilters returns independent arrays so state can never leak between resets', () => {

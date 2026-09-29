@@ -132,6 +132,21 @@ export function resolveSelectedMachine(machines, machineId) {
   return machines.find((machine) => machine.machine_id === machineId) ?? null;
 }
 
+// Names that start with, then contain, the typed text come first; input order is otherwise preserved.
+export function rankBySearch(machines, search) {
+  const query = normalized(search);
+  if (!query) return [...machines];
+  const rankOf = (machine) => {
+    const name = normalized(machineName(machine));
+    if (name.startsWith(query)) return 0;
+    return name.includes(query) ? 1 : 2;
+  };
+  return machines
+    .map((machine, index) => ({ machine, index, rank: rankOf(machine) }))
+    .sort((left, right) => left.rank - right.rank || left.index - right.index)
+    .map((entry) => entry.machine);
+}
+
 // Source names usually repeat the brand ("John Deere 8R 340"); avoid printing it twice.
 export function machineName(machine) {
   if (!machine) return '';
