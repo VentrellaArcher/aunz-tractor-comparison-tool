@@ -65,7 +65,7 @@ export function suggestionsMarkup(machines, activeIndex, total = machines.length
 }
 
 export function onboardingMarkup() {
-  return `<aside class="onboarding" aria-labelledby="onboarding-title"><div class="onboarding-copy"><h3 id="onboarding-title">How it works</h3><ol class="onboarding-steps"><li><strong>Pick a machine.</strong> Search by brand or model, or narrow the list with filters.</li><li><strong>See what is in range.</strong> Machines with a similar Max HP appear in the next section.</li><li><strong>Compare up to four.</strong> Add machines, then review differences, copy, export or print.</li></ol></div><button type="button" class="btn btn-secondary" data-action="dismiss-onboarding">Got it</button></aside>`;
+  return `<div class="onboarding" role="group" aria-labelledby="onboarding-title"><div class="onboarding-copy"><h3 id="onboarding-title">How it works</h3><ol class="onboarding-steps"><li><strong>Pick a machine.</strong> Search by brand or model, or narrow the list with filters.</li><li><strong>See what is in range.</strong> Machines with a similar Max HP appear in the next section.</li><li><strong>Compare up to four.</strong> Add machines, then review differences, copy, export or print.</li></ol></div><button type="button" class="btn btn-secondary" data-action="dismiss-onboarding">Got it</button></div>`;
 }
 
 export function discoveryMarkup(context) {

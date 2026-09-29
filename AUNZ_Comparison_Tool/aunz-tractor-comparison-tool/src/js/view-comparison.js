@@ -81,7 +81,7 @@ function sectionToggle(section, isCollapsed, keyPrefix) {
 function sectionBody(section, columnCount, isCollapsed) {
   const rows = isCollapsed ? '' : section.visibleRows.map(rowMarkup).join('');
   const note = section.note && !isCollapsed ? `<p class="section-note">${escapeHtml(section.note)}</p>` : '';
-  return `<tbody class="comparison-section${isCollapsed ? ' is-collapsed' : ''}" data-section="${escapeHtml(section.name)}"><tr class="section-row"><th colspan="${columnCount + 1}" scope="colgroup">${sectionToggle(section, isCollapsed, 'section')}${note}</th></tr>${rows}</tbody>`;
+  return `<tbody class="comparison-section${isCollapsed ? ' is-collapsed' : ''}" data-section="${escapeHtml(section.name)}"><tr class="section-row"><th colspan="${columnCount + 1}" scope="rowgroup">${sectionToggle(section, isCollapsed, 'section')}${note}</th></tr>${rows}</tbody>`;
 }
 
 export function comparisonTableMarkup(model, collapsed) {

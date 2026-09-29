@@ -78,14 +78,17 @@ const eligibleMachines = () => filterMachines(catalogue(), app.state.filters);
 /* ---------- Small helpers ---------- */
 
 // Full re-renders replace focused controls, so remember which one had focus and put it back.
-function withFocusRestore(container, render) {
+function withFocusRestore(container, render, fallbackSelector) {
   const active = document.activeElement;
   const key = active && container.contains(active) ? active.dataset.focusKey : null;
   const selection = key && typeof active.selectionStart === 'number' ? [active.selectionStart, active.selectionEnd] : null;
   render();
   if (!key) return;
   const target = [...container.querySelectorAll('[data-focus-key]')].find((element) => element.dataset.focusKey === key);
-  if (!target || target.disabled) return;
+  if (!target || target.disabled) {
+    if (fallbackSelector) container.querySelector(fallbackSelector)?.focus({ preventScroll: true });
+    return;
+  }
   target.focus({ preventScroll: true });
   if (selection && typeof target.setSelectionRange === 'function') {
     try {
@@ -446,7 +449,7 @@ function renderComparison() {
       return;
     }
     els.comparison.innerHTML = comparisonMarkup({ model: buildComparisonModel(machines, app.state.view), pickerQuery: app.ui.pickerQuery, collapsed: app.ui.collapsed });
-  });
+  }, '.comparison-actions button');
   app.ui.pickerOpen = false;
 }
 
@@ -879,7 +882,7 @@ async function start() {
     renderDiscoveryFull();
     refresh();
     persist('replace');
-    setStatus('ready', `${machines.length} published machines loaded.`);
+    setStatus('ready', `${machines.length} published machine${machines.length === 1 ? '' : 's'} loaded.`);
     const notices = [...initial.notices];
     if (skipped > 0) notices.push(`${skipped} incomplete catalogue record${skipped === 1 ? ' was' : 's were'} skipped.`);
     if (notices.length) showToast(notices.join(' '), { duration: 9000 });

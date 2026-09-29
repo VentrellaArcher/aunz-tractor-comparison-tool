@@ -111,7 +111,7 @@ export function bandControlMarkup(percentage) {
 
 export function summaryMarkup(selectedMachine, relationship, candidateCount) {
   const market = selectedMachine.market ? ` · ${escapeHtml(selectedMachine.market)}` : '';
-  return `<div class="relationship-summary" aria-label="Relationship summary">
+  return `<div class="relationship-summary" role="group" aria-label="Relationship summary">
       <div class="summary-primary"><strong>Selected machine</strong><span class="summary-machine">${escapeHtml(selectionLabel(selectedMachine))}${market}</span></div>
       <div><strong>Selected Max HP</strong><span>${escapeHtml(String(selectedMachine.max_hp))} hp</span></div>
       <div><strong>Rule</strong><span>Within ${relationship.percentage}% of Max HP</span></div>
