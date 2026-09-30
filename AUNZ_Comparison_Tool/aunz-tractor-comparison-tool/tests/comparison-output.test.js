@@ -78,17 +78,31 @@ test('clipboard success and failure are reported through injectable boundary', a
   assert.match((await copyComparison(createOutputModel(empty, machines), { writeText: async () => {} })).message, /unavailable/);
 });
 
-test('CSV download uses Blob, safe filename and revokes object URL', () => {
-  let revoked = false;
-  let clicked = false;
+test('CSV download uses Blob and a safe filename, and revokes the object URL only after the download has started', () => {
+  const events = [];
+  const anchor = { click: () => events.push('click'), remove: () => events.push('remove') };
+  let revokeLater = null;
   const browser = {
     Blob,
-    URL: { createObjectURL: () => 'blob:test', revokeObjectURL: () => { revoked = true; } },
-    document: { createElement: () => ({ click: () => { clicked = true; } }) }
+    URL: { createObjectURL: () => 'blob:test', revokeObjectURL: (url) => events.push(`revoke ${url}`) },
+    document: { body: { appendChild: (node) => events.push(node === anchor ? 'append' : 'append other') }, createElement: () => anchor }
   };
-  assert.deepEqual(downloadCsv(createOutputModel(state, machines, buildInfo), browser), { ok: true, message: 'CSV export started.' });
+  assert.deepEqual(downloadCsv(createOutputModel(state, machines, buildInfo), browser, (callback) => { revokeLater = callback; }), { ok: true, message: 'CSV export started.' });
+  assert.deepEqual(events, ['append', 'click', 'remove'], 'the link is in the page while it is clicked, then removed');
+  assert.equal(anchor.href, 'blob:test');
+  assert.equal(anchor.download, createSafeFilename());
+  assert.equal(typeof revokeLater, 'function', 'revocation is deferred, not immediate');
+  revokeLater();
+  assert.deepEqual(events.slice(-1), ['revoke blob:test']);
+});
+
+test('CSV download still works when the page has no body to attach to, and reports failures', () => {
+  let clicked = false;
+  const bare = { Blob, URL: { createObjectURL: () => 'blob:test', revokeObjectURL: () => {} }, document: { createElement: () => ({ click: () => { clicked = true; } }) } };
+  assert.equal(downloadCsv(createOutputModel(state, machines, buildInfo), bare, (callback) => callback()).ok, true);
   assert.equal(clicked, true);
-  assert.equal(revoked, true);
+  const broken = { Blob: class { constructor() { throw new Error('no blobs'); } }, URL: {}, document: {} };
+  assert.deepEqual(downloadCsv(createOutputModel(state, machines, buildInfo), broken, () => {}), { ok: false, message: 'CSV export failed. Try again.' });
 });
 
 test('print invokes injectable boundary exactly once and preserves empty availability', () => {

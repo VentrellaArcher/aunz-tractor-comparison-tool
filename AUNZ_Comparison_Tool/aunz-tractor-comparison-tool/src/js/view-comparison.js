@@ -1,6 +1,12 @@
 import { MAX_COMPARISON_MACHINES } from './comparison.js';
-import { selectionLabel } from './filters.js';
+import { machineName } from './filters.js';
+import { suggestionMeta } from './view-discovery.js';
 import { deltaMarkup, escapeHtml, icon, plural, slotBadge, valueMarkup } from './view-html.js';
+
+// The year (and market) is only present when another machine in the catalogue shares this name.
+function detailMarkup(card, className) {
+  return card.detail ? `<span class="${className}">${escapeHtml(card.detail)}</span>` : '';
+}
 
 export function emptyComparisonMarkup() {
   return `<div class="empty-state comparison-empty"><span class="empty-icon" aria-hidden="true">${icon('columns')}</span><p>No machines are currently compared.</p><p class="hint">Add machines from the Max HP results above, or search for one below. You can compare up to ${MAX_COMPARISON_MACHINES} machines side by side.</p></div>`;
@@ -11,8 +17,10 @@ export function comparisonPickerMarkup(query, isFull) {
   return `<div class="comparison-picker"><label for="comparison-search">Add a machine directly</label><div class="comparison-picker-input"><span class="field-icon" aria-hidden="true">${icon('search')}</span><input id="comparison-search" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="comparison-suggestions" aria-describedby="comparison-search-hint" autocomplete="off" spellcheck="false" placeholder="Search by manufacturer or model" value="${escapeHtml(query)}" data-focus-key="picker"${isFull ? ' disabled' : ''} /><ul id="comparison-suggestions" class="comparison-suggestions" role="listbox" aria-label="Machines to add" hidden></ul></div><p id="comparison-search-hint" class="hint">${escapeHtml(hint)}</p></div>`;
 }
 
-export function pickerSuggestionsMarkup(machines, activeIndex) {
-  return machines.map((machine, index) => `<li id="picker-option-${index}" role="option" class="comparison-suggestion" aria-selected="${index === activeIndex}" data-action="add-suggestion" data-machine-id="${escapeHtml(machine.machine_id)}">${escapeHtml(selectionLabel(machine))}<span aria-hidden="true">Add</span></li>`).join('');
+export function pickerSuggestionsMarkup(machines, activeIndex, total = machines.length) {
+  const options = machines.map((machine, index) => `<li id="picker-option-${index}" role="option" class="comparison-suggestion" aria-selected="${index === activeIndex}" data-action="add-suggestion" data-machine-id="${escapeHtml(machine.machine_id)}"><span class="suggestion-text"><span class="suggestion-name">${escapeHtml(machineName(machine))}</span><span class="suggestion-meta">${escapeHtml(suggestionMeta(machine))}</span></span><span class="suggestion-add" aria-hidden="true">Add</span></li>`).join('');
+  const more = total > machines.length ? `<li class="suggestion-more" role="presentation">Showing ${machines.length} of ${total}. Keep typing to narrow the list.</li>` : '';
+  return options + more;
 }
 
 export function actionsMarkup() {
@@ -53,8 +61,9 @@ export function hiddenRowsNote(totals) {
 
 export function viewOptionsMarkup(view, machineCount, totals) {
   const note = hiddenRowsNote(totals);
+  const needsSecondMachine = machineCount < 2;
   return `<div class="view-options" role="group" aria-label="Table view options">
-      <label class="switch"><input type="checkbox" data-action="toggle-differences" data-focus-key="diff"${view.differencesOnly ? ' checked' : ''}${machineCount < 2 ? ' disabled' : ''}><span class="switch-track" aria-hidden="true"></span><span class="switch-label">Show only differences</span></label>
+      <div class="switch-item"><label class="switch"><input type="checkbox" data-action="toggle-differences" data-focus-key="diff"${view.differencesOnly ? ' checked' : ''}${needsSecondMachine ? ' disabled aria-describedby="diff-note"' : ''}><span class="switch-track" aria-hidden="true"></span><span class="switch-label">Show only differences</span></label>${needsSecondMachine ? '<p id="diff-note" class="switch-note">Add a second machine to use this.</p>' : ''}</div>
       <label class="switch"><input type="checkbox" data-action="toggle-empty" data-focus-key="empty"${view.showEmpty ? ' checked' : ''}><span class="switch-track" aria-hidden="true"></span><span class="switch-label">Show rows with no published value</span></label>
       <div class="view-options-sections"><button type="button" class="btn btn-small btn-quiet" data-action="collapse-all" data-focus-key="collapse">Collapse all</button><button type="button" class="btn btn-small btn-quiet" data-action="expand-all" data-focus-key="expand">Expand all</button></div>
     </div>
@@ -85,13 +94,13 @@ function sectionBody(section, columnCount, isCollapsed) {
 }
 
 export function comparisonTableMarkup(model, collapsed) {
-  const headers = model.machines.map((card) => `<th scope="col" class="machine-col${card.isBaseline ? ' is-baseline' : ''}">${slotBadge(card.letter, card.isBaseline)}<span class="visually-hidden">Machine ${card.letter}${card.isBaseline ? ' (baseline): ' : ': '}</span><span class="col-name">${escapeHtml(card.name)}</span>${card.isBaseline ? '<span class="baseline-label">Baseline</span>' : ''}</th>`).join('');
+  const headers = model.machines.map((card) => `<th scope="col" class="machine-col${card.isBaseline ? ' is-baseline' : ''}">${slotBadge(card.letter, card.isBaseline)}<span class="visually-hidden">Machine ${card.letter}${card.isBaseline ? ' (baseline): ' : ': '}</span><span class="col-name">${escapeHtml(card.name)}</span>${detailMarkup(card, 'col-detail')}${card.isBaseline ? '<span class="baseline-label">Baseline</span>' : ''}</th>`).join('');
   const sections = model.sections.filter((section) => !section.hidden).map((section) => sectionBody(section, model.machines.length, collapsed.has(section.name))).join('');
   return `<div class="comparison-scroll" role="region" aria-label="Detailed comparison table" tabindex="0"><table class="comparison-table"><caption class="visually-hidden">Detailed side-by-side tractor comparison. Machine A is the baseline for differences.</caption><thead><tr><th scope="col" class="spec-col">Specification</th>${headers}</tr></thead>${sections}</table></div>`;
 }
 
 function specCardMarkup(row, cards) {
-  const values = row.cells.map((cell, index) => `<div class="spec-value${cards[index].isBaseline ? ' is-baseline' : ''}${cell.differs ? ' differs' : ''}"><dt>${slotBadge(cards[index].letter, cards[index].isBaseline)}<span class="visually-hidden">Machine ${cards[index].letter}: </span><span class="spec-machine">${escapeHtml(cards[index].name)}</span></dt><dd>${cellMarkup(cell)}</dd></div>`).join('');
+  const values = row.cells.map((cell, index) => `<div class="spec-value${cards[index].isBaseline ? ' is-baseline' : ''}${cell.differs ? ' differs' : ''}"><dt>${slotBadge(cards[index].letter, cards[index].isBaseline)}<span class="visually-hidden">Machine ${cards[index].letter}: </span><span class="spec-machine">${escapeHtml(cards[index].name)}</span>${detailMarkup(cards[index], 'spec-detail')}</dt><dd>${cellMarkup(cell)}</dd></div>`).join('');
   return `<article class="spec-card${row.priority ? ' priority-row' : ''}${row.allSame ? '' : ' row-differs'}"><h4>${escapeHtml(row.label)}${row.priority ? ' <span class="priority">Priority</span>' : ''}</h4><dl class="spec-values">${values}</dl></article>`;
 }
 
@@ -124,7 +133,7 @@ export function emptyComparisonWithPickerMarkup(pickerQuery) {
 }
 
 export function trayMarkup(cards) {
-  const slots = cards.map((card) => `<li class="tray-slot${card.isBaseline ? ' is-baseline' : ''}">${slotBadge(card.letter, card.isBaseline)}<span class="tray-name">${escapeHtml(card.name)}</span><button type="button" class="tray-remove" data-action="remove-from-comparison" data-machine-id="${escapeHtml(card.id)}" data-focus-key="tray-remove:${escapeHtml(card.id)}" aria-label="Remove ${escapeHtml(card.label)} from comparison">${icon('close')}</button></li>`).join('');
+  const slots = cards.map((card) => `<li class="tray-slot${card.isBaseline ? ' is-baseline' : ''}">${slotBadge(card.letter, card.isBaseline)}<span class="tray-name">${escapeHtml(card.name)}</span>${detailMarkup(card, 'tray-detail')}<button type="button" class="tray-remove" data-action="remove-from-comparison" data-machine-id="${escapeHtml(card.id)}" data-focus-key="tray-remove:${escapeHtml(card.id)}" aria-label="Remove ${escapeHtml(card.label)} from comparison">${icon('close')}</button></li>`).join('');
   const remaining = MAX_COMPARISON_MACHINES - cards.length;
   return `<div class="tray-inner">
       <p class="tray-count"><strong>${cards.length}</strong> of ${MAX_COMPARISON_MACHINES} selected${remaining === 0 ? ' · full' : ''}</p>

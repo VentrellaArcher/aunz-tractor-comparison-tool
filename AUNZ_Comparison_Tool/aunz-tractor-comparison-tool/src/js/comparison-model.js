@@ -46,6 +46,7 @@ export function buildComparisonModel(machines, options = {}) {
     isBaseline: index === 0,
     label: selectionLabel(machine),
     name: machineName(machine),
+    detail: machine.identityDetail ?? '',
     manufacturer: machine.manufacturer ?? '',
     model: machineModel(machine),
     year: machine.model_year ?? null,

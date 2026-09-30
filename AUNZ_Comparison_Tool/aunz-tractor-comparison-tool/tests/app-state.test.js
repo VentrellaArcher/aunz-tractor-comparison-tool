@@ -128,6 +128,8 @@ test('comparison IDs restore only machines that still exist, without duplicates 
   const restored = restoreComparisonIds([JD, JD, 'gone', NH, FENDT, JD_RT, 'mf-8s-265-2023-au'], fleet);
   assert.deepEqual(restored.state.machineIds, [JD, NH, FENDT, JD_RT]);
   assert.equal(restored.skipped, 3);
+  assert.equal(restored.missing, 1, 'only the unknown ID is missing');
+  assert.equal(restored.overflow, 1, 'the fifth valid machine exceeds the limit');
   assert.deepEqual(restoreComparisonIds('not-an-array', fleet).state.machineIds, []);
 });
 

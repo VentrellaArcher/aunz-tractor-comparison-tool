@@ -1,6 +1,6 @@
 import { getFilterOptions } from './filters.js';
 import { RELATIONSHIP_PERCENTAGES } from './relationships.js';
-import { restoreComparisonIds } from './comparison.js';
+import { MAX_COMPARISON_MACHINES, restoreComparisonIds } from './comparison.js';
 import { RESULT_COLUMN_MODES, isKnownSort } from './results-model.js';
 import { DEFAULT_RELATIONSHIP_PERCENTAGE, createInitialState } from './state.js';
 
@@ -58,7 +58,7 @@ export function decodeState(query, machines) {
   let droppedFilters = 0;
 
   const primary = params.get('m');
-  if (primary !== null) {
+  if (primary) {
     if (known.has(primary)) state.selectedMachineId = primary;
     else notices.push('The primary machine in this link is no longer in the catalogue.');
   }
@@ -67,14 +67,15 @@ export function decodeState(query, machines) {
   if (compared !== null) {
     const restored = restoreComparisonIds(compared.split(',').filter(Boolean).slice(0, MAX_VALUES), machines);
     state.comparison = restored.state;
-    if (restored.skipped > 0) notices.push(`${restored.skipped} compared machine${restored.skipped === 1 ? ' is' : 's are'} no longer in the catalogue and ${restored.skipped === 1 ? 'was' : 'were'} skipped.`);
+    if (restored.missing > 0) notices.push(`${restored.missing} compared machine${restored.missing === 1 ? ' is' : 's are'} no longer in the catalogue and ${restored.missing === 1 ? 'was' : 'were'} skipped.`);
+    if (restored.overflow > 0) notices.push(`Comparison is limited to ${MAX_COMPARISON_MACHINES} machines, so ${restored.overflow} more ${restored.overflow === 1 ? 'was' : 'were'} not restored.`);
   }
 
   const band = Number(params.get('band'));
   if (params.has('band') && RELATIONSHIP_PERCENTAGES.includes(band)) state.relationshipPercentage = band;
 
   const search = params.get('q');
-  if (search !== null) state.filters.search = search.trim().slice(0, MAX_TEXT_LENGTH);
+  if (search !== null) state.filters.search = search.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, MAX_TEXT_LENGTH);
 
   for (const { key, param, options: optionKey } of FILTER_PARAMS) {
     const { valid, dropped } = cleanValues(params.getAll(param), options[optionKey]);

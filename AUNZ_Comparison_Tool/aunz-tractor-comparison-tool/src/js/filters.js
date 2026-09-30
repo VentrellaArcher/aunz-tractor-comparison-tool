@@ -43,10 +43,30 @@ function searchTokens(value) {
   return foldText(value).split(/[^a-z0-9]+/).filter(Boolean);
 }
 
+// "MY25", "MY 25" and "MY2025" name a model year. A bare two-digit number is left alone because it may be part of a model name.
+const MODEL_YEAR_NOTATION = /\bmy[\s'\u2019.-]*(\d{4}|\d{2})\b/g;
+const MODEL_YEAR_IN_PROGRESS = /\bmy[\s'\u2019.-]*\d{0,3}$/;
+
+function splitModelYears(query) {
+  const years = [];
+  const notation = [];
+  const rest = query
+    .replace(MODEL_YEAR_NOTATION, (match, digits) => {
+      years.push(digits.length === 2 ? 2000 + Number(digits) : Number(digits));
+      notation.push(match);
+      return ' ';
+    })
+    .replace(MODEL_YEAR_IN_PROGRESS, ' ') // "my" or "my2" while the year is still being typed
+    .replace(/\s+/g, ' ')
+    .trim();
+  return { years, notation: notation.join(' '), rest };
+}
+
 // Contiguous substring on name/brand (original behaviour), plus typeahead tokens (whole words, the last one a
 // prefix) and spacing-insensitive matching, so "8r 3", "t8 410" and "8r340" all find the intended machine.
 function machineMatchesSearch(machine, search) {
-  const query = normalized(search);
+  const { years, rest: query } = splitModelYears(normalized(search));
+  if (years.length > 0 && !years.includes(Number(machine.model_year))) return false;
   if (!query) return true;
   if ([machine.machine, machine.manufacturer].some((value) => normalized(value).includes(query))) return true;
   const queryTokens = searchTokens(query);
@@ -123,8 +143,15 @@ export function resetFilters() {
   return Object.fromEntries(Object.entries(DEFAULT_FILTERS).map(([key, value]) => [key, Array.isArray(value) ? [...value] : value]));
 }
 
+// One collator for every comparison: localeCompare builds a new one each call, which dominates sorting on large catalogues.
+const selectionCollator = new Intl.Collator(undefined, { numeric: true });
+
+// Manufacturer, name, model year, then ID, so near-identical records always sort the same way.
 export function getSelectionOptions(machines) {
-  return [...machines].sort((left, right) => `${left.manufacturer} ${left.machine} ${left.model_year} ${left.machine_id}`.localeCompare(`${right.manufacturer} ${right.machine} ${right.model_year} ${right.machine_id}`, undefined, { numeric: true }));
+  return machines
+    .map((machine) => ({ machine, key: `${machine.manufacturer} ${machine.machine} ${machine.model_year} ${machine.machine_id}` }))
+    .sort((left, right) => selectionCollator.compare(left.key, right.key))
+    .map((entry) => entry.machine);
 }
 
 export function resolveSelectedMachine(machines, machineId) {
@@ -134,7 +161,7 @@ export function resolveSelectedMachine(machines, machineId) {
 
 // Names that start with, then contain, the typed text come first; input order is otherwise preserved.
 export function rankBySearch(machines, search) {
-  const query = normalized(search);
+  const query = splitModelYears(normalized(search)).rest;
   if (!query) return [...machines];
   const rankOf = (machine) => {
     const name = normalized(machineName(machine));
@@ -168,8 +195,10 @@ export function machineModel(machine) {
   return name;
 }
 
+// Annotated machines (see identity.js) carry a label that stays unique when a name is shared across years or markets.
 export function selectionLabel(machine) {
   if (!machine) return '';
+  if (machine.identityLabel) return machine.identityLabel;
   const year = machine.model_year;
   return year === null || year === undefined || year === '' ? machineName(machine) : `${machineName(machine)} (${year})`;
 }
@@ -199,7 +228,7 @@ function correctionLimit(token) {
 function buildVocabulary(machines) {
   const vocabulary = new Map();
   for (const machine of machines) {
-    const words = `${machine.manufacturer ?? ''} ${machine.machine ?? ''}`.split(/[^A-Za-z0-9]+/).filter(Boolean);
+    const words = `${machine.manufacturer ?? ''} ${machine.machine ?? ''} ${machine.model_year ?? ''}`.split(/[^A-Za-z0-9]+/).filter(Boolean);
     for (const word of words) {
       const key = foldText(word);
       const entry = vocabulary.get(key) ?? { display: word, count: 0 };
@@ -214,7 +243,8 @@ function buildVocabulary(machines) {
 export function suggestSearchCorrection(machines, search) {
   const query = normalized(search);
   if (!query || searchMachines(machines, query).length > 0) return null;
-  const tokens = searchTokens(query);
+  const { rest, notation } = splitModelYears(query);
+  const tokens = searchTokens(rest);
   if (tokens.length === 0) return null;
   const vocabulary = buildVocabulary(machines);
   const corrected = [];
@@ -233,8 +263,8 @@ export function suggestSearchCorrection(machines, search) {
     if (!best) return null;
     corrected.push(best.display);
   }
-  const candidate = corrected.join(' ');
-  if (foldText(candidate) === tokens.join(' ')) return null;
+  const candidate = [corrected.join(' '), notation].filter(Boolean).join(' ');
+  if (foldText(corrected.join(' ')) === tokens.join(' ')) return null;
   const count = searchMachines(machines, candidate).length;
   return count > 0 ? { query: candidate, count } : null;
 }

@@ -67,6 +67,8 @@ function finiteNumber(value) {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
+const nameCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
 // Adds signed differences to the rows produced by findRelationshipResults; the selected row has none.
 export function buildResultRows(relationship, selectedMachine) {
   if (!relationship?.available) return [];
@@ -90,8 +92,13 @@ export function sortResultRows(rows, sortKey) {
       if (leftValue !== null && rightValue === null) return -1;
       if (leftValue !== null && rightValue !== null && leftValue !== rightValue) return sort.direction === 'desc' ? rightValue - leftValue : leftValue - rightValue;
     } else {
-      const byName = machineName(left.row.machine).localeCompare(machineName(right.row.machine), undefined, { numeric: true, sensitivity: 'base' });
+      const byName = nameCollator.compare(machineName(left.row.machine), machineName(right.row.machine));
       if (byName !== 0) return byName;
+      // Same name (for example two model years of one machine): year, then the permanent ID, never input order.
+      const byYear = (finiteNumber(left.row.machine.model_year) ?? 0) - (finiteNumber(right.row.machine.model_year) ?? 0);
+      if (byYear !== 0) return byYear;
+      const byId = String(left.row.machine.machine_id).localeCompare(String(right.row.machine.machine_id));
+      if (byId !== 0) return byId;
     }
     return left.index - right.index;
   });

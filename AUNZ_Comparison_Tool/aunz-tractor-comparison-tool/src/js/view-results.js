@@ -110,7 +110,9 @@ export function bandControlMarkup(percentage) {
 }
 
 export function summaryMarkup(selectedMachine, relationship, candidateCount) {
-  const market = selectedMachine.market ? ` · ${escapeHtml(selectedMachine.market)}` : '';
+  // A label that already names the market (shared names) does not need it repeated.
+  const marketShown = Boolean(selectedMachine.identityDetail) && selectedMachine.identityDetail.includes(String(selectedMachine.market));
+  const market = selectedMachine.market && !marketShown ? ` · ${escapeHtml(selectedMachine.market)}` : '';
   return `<div class="relationship-summary" role="group" aria-label="Relationship summary">
       <div class="summary-primary"><strong>Selected machine</strong><span class="summary-machine">${escapeHtml(selectionLabel(selectedMachine))}${market}</span></div>
       <div><strong>Selected Max HP</strong><span>${escapeHtml(String(selectedMachine.max_hp))} hp</span></div>

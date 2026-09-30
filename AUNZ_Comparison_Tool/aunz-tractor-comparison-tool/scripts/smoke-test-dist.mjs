@@ -16,6 +16,8 @@ const requiredFiles = [
   'js/comparison.js',
   'js/comparison-model.js',
   'js/comparison-output.js',
+  'js/history-sync.js',
+  'js/identity.js',
   'js/results-model.js',
   'js/state.js',
   'js/url-state.js',

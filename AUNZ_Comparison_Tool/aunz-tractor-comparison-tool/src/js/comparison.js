@@ -43,17 +43,29 @@ export function makeBaseline(state, machineId) {
   return { machineIds: [machineId, ...state.machineIds.filter((id) => id !== machineId)], message: null };
 }
 
-// Keeps only unique IDs that still exist in the catalogue; reports what was skipped.
+// Keeps only unique IDs that still exist in the catalogue. `missing` counts unknown IDs and `overflow`
+// counts valid IDs beyond the limit, so callers can explain each case; `skipped` is every ID dropped.
 export function restoreComparisonIds(machineIds, machines, options = {}) {
   const maxMachines = options.maxMachines ?? MAX_COMPARISON_MACHINES;
   const known = new Set(machines.map((machine) => machine.machine_id));
   const kept = [];
+  const overflowIds = new Set();
   let skipped = 0;
+  let missing = 0;
   for (const id of Array.isArray(machineIds) ? machineIds : []) {
-    if (typeof id === 'string' && known.has(id) && !kept.includes(id) && kept.length < maxMachines) kept.push(id);
-    else skipped += 1;
+    if (typeof id !== 'string' || !known.has(id)) {
+      missing += 1;
+      skipped += 1;
+    } else if (kept.includes(id)) {
+      skipped += 1;
+    } else if (kept.length >= maxMachines) {
+      overflowIds.add(id);
+      skipped += 1;
+    } else {
+      kept.push(id);
+    }
   }
-  return { state: { machineIds: kept, message: null }, skipped };
+  return { state: { machineIds: kept, message: null }, skipped, missing, overflow: overflowIds.size };
 }
 
 export function clearComparison() {

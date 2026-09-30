@@ -64,6 +64,31 @@ test('comparison IDs are de-duplicated and capped at four', () => {
   assert.deepEqual(decoded.state.comparison.machineIds, ['jd-8r-340-2025-au', 'jd-8rt-340-2025-au', 'nh-t8-410-2024-us', 'fendt-942-2025-au']);
 });
 
+test('duplicates, the four-machine cap and retired machines are each explained accurately', () => {
+  const duplicates = decodeState('c=jd-8r-340-2025-au,jd-8r-340-2025-au,jd-8rt-340-2025-au', fleet);
+  assert.deepEqual(duplicates.notices, [], 'a repeated machine collapses quietly');
+
+  const capped = decodeState('c=jd-8r-340-2025-au,jd-8rt-340-2025-au,nh-t8-410-2024-us,fendt-942-2025-au,mf-8s-265-2023-au', fleet);
+  assert.equal(capped.notices.length, 1);
+  assert.match(capped.notices[0], /limited to 4 machines, so 1 more was not restored/);
+  assert.doesNotMatch(capped.notices[0], /no longer in the catalogue/, 'a valid machine is not called retired');
+
+  const mixed = decodeState('c=gone-1,gone-2,jd-8r-340-2025-au', fleet);
+  assert.match(mixed.notices[0], /^2 compared machines are no longer in the catalogue and were skipped\.$/);
+});
+
+test('an empty primary machine parameter means no machine rather than a retired one', () => {
+  const decoded = decodeState('m=&c=jd-8r-340-2025-au', fleet);
+  assert.deepEqual(decoded.notices, []);
+  assert.equal(decoded.state.selectedMachineId, '');
+});
+
+test('control characters in search text become spaces instead of reaching the interface', () => {
+  const decoded = decodeState('q=%008r%09340%0A&m=jd-8r-340-2025-au', fleet);
+  assert.equal(decoded.state.filters.search, '8r 340');
+  assert.doesNotMatch(decodeState('q=%00%00', fleet).state.filters.search, /[\u0000-\u001f]/);
+});
+
 test('unknown filter values, bands, sorts and columns fall back to safe defaults', () => {
   const decoded = decodeState('band=13&mf=Nobody&mf=Fendt&yr=1999&ts=45&sort=price-asc&cols=everything&brand=Nobody&diff=yes&empty=1', fleet);
   assert.equal(decoded.state.relationshipPercentage, 10);

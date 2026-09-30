@@ -84,6 +84,18 @@ test('sorting places missing values last in both directions and keeps ties stabl
   assert.equal(isKnownSort('price-asc'), false);
 });
 
+test('sorting by name breaks ties by model year then ID, whatever order the rows arrive in', () => {
+  const variant = (id, year) => makeMachine({ machine_id: id, manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: year, max_hp: 374 });
+  const base = variant('jd-8r-340-2025-au', 2025);
+  const machines = [base, variant('jd-8r-340-2027-au', 2027), variant('jd-8r-340-2023-au', 2023), variant('jd-8r-340-2025-nz', 2025), variant('jd-8r-340-2025-fr', 2025)];
+  const expected = ['jd-8r-340-2023-au', 'jd-8r-340-2025-fr', 'jd-8r-340-2025-nz', 'jd-8r-340-2027-au'];
+  const rows = buildResultRows(findRelationshipResults(machines, base, 10), base);
+  const sortedIds = (input) => ids(sortResultRows(input, 'name-asc')).filter((id) => id !== base.machine_id);
+  assert.deepEqual(sortedIds(rows), expected);
+  assert.deepEqual(sortedIds([...rows].reverse()), expected, 'input order does not matter');
+  assert.equal(sortResultRows(rows, 'name-asc')[0].machineId, base.machine_id, 'the selected machine stays pinned');
+});
+
 test('brand narrowing is view-only: it keeps the selected machine and ignores case', () => {
   const rows = rowsFor(100);
   assert.equal(filterResultRows(rows, []).length, rows.length);

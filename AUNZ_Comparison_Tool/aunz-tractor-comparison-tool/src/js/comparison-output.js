@@ -134,7 +134,7 @@ export async function copyLink(url, clipboard = globalThis.navigator?.clipboard)
   return { ok: false, message: 'Copy failed. Select the address bar link to share instead.' };
 }
 
-export function downloadCsv(model, browser = globalThis) {
+export function downloadCsv(model, browser = globalThis, scheduleRevoke = (callback) => browser.setTimeout(callback, 30000)) {
   if (!model.available) return { ok: false, message: 'CSV export unavailable: no machines are compared.' };
   try {
     const blob = new browser.Blob([`\uFEFF${createCsvText(model)}`], { type: 'text/csv;charset=utf-8' });
@@ -142,8 +142,12 @@ export function downloadCsv(model, browser = globalThis) {
     const anchor = browser.document.createElement('a');
     anchor.href = url;
     anchor.download = createSafeFilename();
+    anchor.hidden = true;
+    // Some browsers only start a download from a link that is in the page, and cancel it if the URL is revoked straight away.
+    browser.document.body?.appendChild(anchor);
     anchor.click();
-    browser.URL.revokeObjectURL(url);
+    anchor.remove?.();
+    scheduleRevoke(() => browser.URL.revokeObjectURL(url));
     return { ok: true, message: 'CSV export started.' };
   } catch {
     return { ok: false, message: 'CSV export failed. Try again.' };

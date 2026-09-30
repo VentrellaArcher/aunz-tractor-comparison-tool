@@ -1,11 +1,13 @@
 import { loadRuntimeData, sanitizeMachines } from './data-loader.js';
 import { filterMachines, getFacetCounts, getFilterOptions, getSelectionOptions, machineName, rankBySearch, resolveSelectedMachine, selectionLabel, suggestSearchCorrection } from './filters.js';
+import { annotateIdentity } from './identity.js';
+import { createHistorySync } from './history-sync.js';
 import { findRelationshipResults } from './relationships.js';
 import { MAX_COMPARISON_MACHINES, resolveComparisonMachines } from './comparison.js';
 import { buildComparisonModel, slotLetter } from './comparison-model.js';
 import { buildResultRows, filterResultRows, sortResultRows, summariseBrands } from './results-model.js';
 import { reconcile, withBaseline, withComparisonAdded, withComparisonCleared, withComparisonRemoved, withComparisonToggled, withFilterChange, withFiltersReset, withMachineSelected, withRelationshipPercentage, withResultsChange, withSearch, withSelectionCleared, withStartOver, withViewChange, createInitialState } from './state.js';
-import { ONBOARDING_KEY, buildShareUrl, decodeState, encodeState, readPreference, readSessionState, writePreference, writeSessionState } from './url-state.js';
+import { ONBOARDING_KEY, buildShareUrl, decodeState, encodeState, readPreference, readSessionState, writePreference } from './url-state.js';
 import { SUGGESTION_LIMIT, activeFilterEntries, activeFiltersMarkup, discoveryMarkup, filterBadgeText, resultCountText, searchNoteMarkup, suggestionsMarkup } from './view-discovery.js';
 import { cardMoreMarkup, noEligibleMarkup, noSelectionMarkup, resultsMarkup, unavailableMarkup } from './view-results.js';
 import { comparisonMarkup, emptyComparisonWithPickerMarkup, pickerSuggestionsMarkup, trayMarkup } from './view-comparison.js';
@@ -41,6 +43,7 @@ function browserStorage(kind) {
 
 const sessionStore = browserStorage('sessionStorage');
 const localStore = browserStorage('localStorage');
+const historySync = createHistorySync({ storage: sessionStore });
 const wideQuery = window.matchMedia('(min-width: 48rem)');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -68,7 +71,7 @@ const app = {
     resultRows: new Map(),
     toastTimer: 0,
     toastAction: null,
-    persistTimer: 0
+    loading: false
   }
 };
 
@@ -139,21 +142,7 @@ function undoLast() {
 /* ---------- Persistence: address bar, browser history and session ---------- */
 
 function persist(mode) {
-  writeSessionState(sessionStore, app.state);
-  if (mode === 'none') return;
-  const query = encodeState(app.state);
-  if (query === location.search.replace(/^\?/, '')) return;
-  const write = () => {
-    const url = `${location.pathname}${query ? `?${query}` : ''}`;
-    try {
-      history[mode === 'push' ? 'pushState' : 'replaceState'](null, '', url);
-    } catch {
-      // Some browsers rate-limit or block history updates; the tool keeps working without them.
-    }
-  };
-  window.clearTimeout(app.ui.persistTimer);
-  if (mode === 'push') write();
-  else app.ui.persistTimer = window.setTimeout(write, 300);
+  historySync.persist(app.state, mode);
 }
 
 function commit(nextState, { history: mode = 'replace' } = {}) {
@@ -226,9 +215,17 @@ function updateSuggestions(eligible = eligibleMachines()) {
   const input = $('search');
   const list = $('machine-suggestions');
   if (!input || !list) return;
+  if (!app.ui.suggestionsOpen) {
+    // Nothing to rank while the list is closed, which is most state changes.
+    app.ui.suggestionCount = 0;
+    list.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-activedescendant');
+    return;
+  }
   const ranked = rankBySearch(getSelectionOptions(eligible), app.state.filters.search);
   const shown = ranked.slice(0, SUGGESTION_LIMIT);
-  const open = app.ui.suggestionsOpen && shown.length > 0;
+  const open = shown.length > 0;
   app.ui.suggestionCount = shown.length;
   if (open) {
     app.ui.suggestionIndex = Math.min(Math.max(app.ui.suggestionIndex, 0), shown.length - 1);
@@ -459,7 +456,7 @@ function renderTray() {
   const hidden = machines.length === 0 || app.ui.comparisonInView;
   els.tray.hidden = hidden;
   document.body.classList.toggle('has-tray', !hidden);
-  const cards = machines.map((machine, index) => ({ id: machine.machine_id, letter: slotLetter(index), isBaseline: index === 0, name: machineName(machine), label: selectionLabel(machine) }));
+  const cards = machines.map((machine, index) => ({ id: machine.machine_id, letter: slotLetter(index), isBaseline: index === 0, name: machineName(machine), detail: machine.identityDetail ?? '', label: selectionLabel(machine) }));
   const key = JSON.stringify(cards);
   if (key === app.ui.trayKey) return;
   app.ui.trayKey = key;
@@ -483,12 +480,13 @@ function updatePickerSuggestions() {
   const input = $('comparison-search');
   const list = $('comparison-suggestions');
   if (!input || !list) return;
-  const shown = pickerOptions().slice(0, PICKER_LIMIT);
+  const options = pickerOptions();
+  const shown = options.slice(0, PICKER_LIMIT);
   const open = app.ui.pickerOpen && shown.length > 0;
   app.ui.pickerCount = shown.length;
   if (open) {
     app.ui.pickerIndex = Math.min(Math.max(app.ui.pickerIndex, 0), shown.length - 1);
-    list.innerHTML = pickerSuggestionsMarkup(shown, app.ui.pickerIndex);
+    list.innerHTML = pickerSuggestionsMarkup(shown, app.ui.pickerIndex, options.length);
   }
   list.hidden = !open;
   input.setAttribute('aria-expanded', String(open));
@@ -592,8 +590,21 @@ function setAllSections(collapse) {
 
 /* ---------- Outputs and sharing (loaded on first use) ---------- */
 
+// Optional features are separate downloads; if one cannot load (for example the connection dropped), say so instead of failing silently.
+async function loadFeature(importer, name) {
+  try {
+    return await importer();
+  } catch {
+    const message = `${name} could not be loaded. Check your connection and try again, or reload the page.`;
+    announce(message, els.outputStatus);
+    showToast(message);
+    return null;
+  }
+}
+
 async function runOutput(kind) {
-  const output = await import('./comparison-output.js');
+  const output = await loadFeature(() => import('./comparison-output.js'), kind === 'copy' ? 'Copy' : kind === 'csv' ? 'CSV export' : 'Print');
+  if (!output) return;
   const model = output.createOutputModel(app.state.comparison, catalogue(), app.data.buildInfo);
   let result;
   if (kind === 'copy') result = await output.copyComparison(model);
@@ -604,7 +615,8 @@ async function runOutput(kind) {
 }
 
 async function copyShareLink() {
-  const output = await import('./comparison-output.js');
+  const output = await loadFeature(() => import('./comparison-output.js'), 'Copy link');
+  if (!output) return;
   const result = await output.copyLink(buildShareUrl(location.href, app.state));
   announce(result.message, els.outputStatus);
   showToast(result.message);
@@ -614,7 +626,7 @@ function printTitle() {
   const machines = resolveComparisonMachines(app.state.comparison, catalogue());
   if (machines.length === 0) return DEFAULT_TITLE;
   const date = new Date().toISOString().slice(0, 10);
-  return `AU-NZ Tractor Comparison - ${machines.map((machine) => machineName(machine)).join(' vs ')} - ${date}`;
+  return `AU-NZ Tractor Comparison - ${machines.map((machine) => selectionLabel(machine)).join(' vs ')} - ${date}`;
 }
 
 window.addEventListener('beforeprint', () => {
@@ -628,8 +640,9 @@ window.addEventListener('afterprint', () => { document.title = DEFAULT_TITLE; })
 /* ---------- Help ---------- */
 
 async function openHelp() {
-  const { helpMarkup } = await import('./view-help.js');
-  els.help.innerHTML = helpMarkup();
+  const help = await loadFeature(() => import('./view-help.js'), 'Help');
+  if (!help) return;
+  els.help.innerHTML = help.helpMarkup();
   els.help.setAttribute('aria-labelledby', 'help-title');
   if (typeof els.help.showModal === 'function') els.help.showModal();
   else els.help.setAttribute('open', '');
@@ -866,11 +879,15 @@ function renderFatal() {
 }
 
 async function start() {
+  if (app.ui.loading) return; // a second press of Try again must not start a second round of downloads
+  app.ui.loading = true;
   try {
     Object.assign(app.ui, { resultsKey: '', comparisonKey: '', trayKey: '' });
     setStatus('loading', 'Loading the machine catalogue…');
     const loaded = await loadRuntimeData();
-    const { machines, skipped } = sanitizeMachines(loaded.machines);
+    const sanitized = sanitizeMachines(loaded.machines);
+    const machines = annotateIdentity(sanitized.machines);
+    const skipped = sanitized.skipped;
     app.data = { ...loaded, machines };
     app.options = getFilterOptions(machines);
 
@@ -898,6 +915,8 @@ async function start() {
   } catch (error) {
     console.error(error);
     renderFatal();
+  } finally {
+    app.ui.loading = false;
   }
 }
 

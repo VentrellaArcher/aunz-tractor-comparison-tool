@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildMachineDataset } from '../scripts/data-utils.mjs';
-import { filterMachines, getFacetCounts, getFilterOptions, machineModel, machineName, rankBySearch, resetFilters, searchMachines, selectionLabel, suggestSearchCorrection } from '../src/js/filters.js';
+import { filterMachines, getFacetCounts, getFilterOptions, getSelectionOptions, machineModel, machineName, rankBySearch, resetFilters, searchMachines, selectionLabel, suggestSearchCorrection } from '../src/js/filters.js';
 import { fleet, makeMachine } from './fixtures/fleet.js';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -112,4 +112,64 @@ test('the real catalogue produces clean labels and consistent facet totals', () 
   assert.deepEqual(Object.keys(counts.manufacturer).sort(), [...options.manufacturers].sort());
   assert.equal(Object.values(counts.manufacturer).reduce((sum, value) => sum + value, 0), catalogue.length);
   assert.equal(Object.values(counts.modelYear).reduce((sum, value) => sum + value, 0), catalogue.length);
+});
+
+// One model in several years, plus a model with a single year: the shape the catalogue is expected to grow into.
+const multiYear = [
+  makeMachine({ machine_id: 'jd-8r-340-2023-au', manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: 2023 }),
+  makeMachine({ machine_id: 'jd-8r-340-2025-au', manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: 2025 }),
+  makeMachine({ machine_id: 'jd-8r-340-2027-au', manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: 2027 }),
+  makeMachine({ machine_id: 'jd-8r-370-2025-au', manufacturer: 'John Deere', machine: 'John Deere 8R 370', model_year: 2025 }),
+  makeMachine({ machine_id: 'fendt-942-2025-au', manufacturer: 'Fendt', machine: 'Fendt 942 Vario', model_year: 2025 })
+];
+
+test('a model year can be searched as a plain year or as MY25, MY 25 and MY2025', () => {
+  const expected = ['jd-8r-340-2025-au', 'jd-8r-370-2025-au', 'fendt-942-2025-au'];
+  for (const query of ['2025', 'my25', 'MY25', 'my 25', 'MY2025', "my'25", 'my-25']) {
+    assert.deepEqual(ids(searchMachines(multiYear, query)).sort(), [...expected].sort(), query);
+  }
+  assert.deepEqual(ids(searchMachines(multiYear, '8r 340 my27')), ['jd-8r-340-2027-au']);
+  assert.deepEqual(ids(searchMachines(multiYear, 'my27 8r 340')), ['jd-8r-340-2027-au']);
+  assert.deepEqual(ids(searchMachines(multiYear, '8r 340 2023')), ['jd-8r-340-2023-au']);
+  assert.deepEqual(ids(searchMachines(multiYear, '8r 340')), ['jd-8r-340-2023-au', 'jd-8r-340-2025-au', 'jd-8r-340-2027-au']);
+  assert.deepEqual(ids(searchMachines(multiYear, 'my25 my27')).sort(), ['jd-8r-340-2025-au', 'jd-8r-340-2027-au', 'jd-8r-370-2025-au', 'fendt-942-2025-au'].sort());
+  assert.deepEqual(searchMachines(multiYear, 'my99'), []);
+});
+
+test('a year that is still being typed does not blank the results', () => {
+  assert.equal(searchMachines(multiYear, 'my').length, multiYear.length);
+  assert.equal(searchMachines(multiYear, '8r 340 my').length, 3);
+  assert.equal(searchMachines(multiYear, '8r 340 my2').length, 3);
+  assert.equal(searchMachines(multiYear, '8r 340 my202').length, 3);
+});
+
+test('a bare two-digit number is not read as a year because it can belong to a model name', () => {
+  const machines = [makeMachine({ machine_id: 'a', machine: 'Demo 27', manufacturer: 'Demo', model_year: 2019 }), makeMachine({ machine_id: 'b', machine: 'Demo 90', manufacturer: 'Demo', model_year: 2027 })];
+  assert.deepEqual(ids(searchMachines(machines, 'demo 27')), ['a']);
+  assert.deepEqual(ids(searchMachines(machines, 'demo my27')), ['b']);
+});
+
+test('ranking and corrections ignore the year notation but keep it in the suggestion', () => {
+  assert.deepEqual(ids(rankBySearch(multiYear, 'john my25')).slice(0, 4), ids(multiYear).slice(0, 4), 'names that start with the text come first, in input order');
+  assert.deepEqual(suggestSearchCorrection(multiYear, 'fent 942 my25'), { query: 'Fendt 942 my25', count: 1 });
+  assert.deepEqual(suggestSearchCorrection(multiYear, 'fent 942 2025'), { query: 'Fendt 942 2025', count: 1 });
+  assert.equal(suggestSearchCorrection(multiYear, 'my99'), null);
+});
+
+test('the selection list is deterministic and puts model years of one machine side by side in year order', () => {
+  const shuffled = [multiYear[4], multiYear[2], multiYear[0], multiYear[3], multiYear[1]];
+  assert.deepEqual(ids(getSelectionOptions(shuffled)), ids(getSelectionOptions(multiYear)));
+  assert.deepEqual(ids(getSelectionOptions(multiYear)), ['fendt-942-2025-au', 'jd-8r-340-2023-au', 'jd-8r-340-2025-au', 'jd-8r-340-2027-au', 'jd-8r-370-2025-au']);
+  const johnDeere = getSelectionOptions(multiYear).filter((machine) => machine.machine === 'John Deere 8R 340').map((machine) => machine.model_year);
+  assert.deepEqual(johnDeere, [2023, 2025, 2027]);
+});
+
+test('facet counts follow model years when one machine has several', () => {
+  const counts = getFacetCounts(multiYear, { ...resetFilters(), search: '8r 340' });
+  assert.equal(counts.modelYear['2023'], 1);
+  assert.equal(counts.modelYear['2025'], 1);
+  assert.equal(counts.modelYear['2027'], 1);
+  const twenty25 = getFacetCounts(multiYear, { ...resetFilters(), modelYear: ['2025'] });
+  assert.equal(twenty25.manufacturer['John Deere'], 2);
+  assert.equal(twenty25.modelYear['2027'], 1, 'a group ignores its own selection');
 });

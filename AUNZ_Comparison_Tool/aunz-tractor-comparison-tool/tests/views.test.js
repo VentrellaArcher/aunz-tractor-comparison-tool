@@ -7,6 +7,7 @@ import { findRelationshipResults } from '../src/js/relationships.js';
 import { buildResultRows, sortResultRows, summariseBrands } from '../src/js/results-model.js';
 import { buildComparisonModel } from '../src/js/comparison-model.js';
 import { getFacetCounts, getFilterOptions, resetFilters } from '../src/js/filters.js';
+import { annotateIdentity } from '../src/js/identity.js';
 import { deltaMarkup, escapeHtml, notApplicableMarkup, valueMarkup } from '../src/js/view-html.js';
 import { FILTER_GROUPS, activeFiltersMarkup, discoveryMarkup, filterGroup, searchNoteMarkup, suggestionsMarkup } from '../src/js/view-discovery.js';
 import { bandControlMarkup, cardMoreMarkup, compareToggleMarkup, resultsMarkup } from '../src/js/view-results.js';
@@ -192,7 +193,10 @@ test('collapsed sections render no rows and report their state to assistive tech
 test('view options reflect the model and differences-only needs two machines', () => {
   const one = comparisonMarkup({ model: buildComparisonModel([fleet[0]], { differencesOnly: true }), pickerQuery: '', collapsed: new Set() });
   assert.match(one, /data-action="toggle-differences"[^>]*disabled/);
+  assert.match(one, /disabled aria-describedby="diff-note"/, 'the disabled switch points at its explanation');
+  assert.match(one, /<p id="diff-note" class="switch-note">Add a second machine to use this\.<\/p>/);
   const two = comparisonMarkup({ model: buildComparisonModel([fleet[0], fleet[1]], { differencesOnly: true, showEmpty: true }), pickerQuery: '', collapsed: new Set() });
+  assert.doesNotMatch(two, /diff-note/, 'no explanation once the control is usable');
   assert.match(two, /data-action="toggle-differences" data-focus-key="diff" checked/);
   assert.match(two, /data-action="toggle-empty" data-focus-key="empty" checked/);
   assert.match(hiddenRowsNote({ hiddenEmpty: 1, hiddenSame: 3 }), /1 row with no published value for these machines is hidden\. 3 rows with identical values are hidden\./);
@@ -251,4 +255,59 @@ test('every interactive action in the markup has a handler in the application', 
     const handled = new RegExp(`'${action}':|dataset\\.action === '${action}'`).test(app);
     assert.ok(handled, `no handler for data-action="${action}"`);
   }
+});
+
+// The same machine in several years and markets, next to one unrelated machine.
+const variants = annotateIdentity([
+  makeMachine({ machine_id: 'jd-8r-340-2025-au', manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: 2025, market: 'AU' }),
+  makeMachine({ machine_id: 'jd-8r-340-2027-au', manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: 2027, market: 'AU' }),
+  makeMachine({ machine_id: 'jd-8r-340-2025-nz', manufacturer: 'John Deere', machine: 'John Deere 8R 340', model_year: 2025, market: 'NZ' }),
+  makeMachine({ machine_id: 'fendt-942-2025-au', manufacturer: 'Fendt', machine: 'Fendt 942 Vario', model_year: 2025, market: 'AU' })
+]);
+const trayCards = (model) => model.machines.map((card) => ({ id: card.id, letter: card.letter, isBaseline: card.isBaseline, name: card.name, detail: card.detail, label: card.label }));
+
+test('machines that share a name are told apart in the table, the spec list, the tray and the remove controls', () => {
+  const model = buildComparisonModel(variants);
+  const html = comparisonMarkup({ model, pickerQuery: '', collapsed: new Set() });
+  const headers = [...html.matchAll(/<th scope="col" class="machine-col[^>]*>([\s\S]*?)<\/th>/g)].map((match) => match[1]);
+  assert.equal(headers.length, 4);
+  assert.match(headers[0], /class="col-detail">2025 · AU<\/span>/);
+  assert.match(headers[1], /class="col-detail">2027 · AU<\/span>/);
+  assert.match(headers[2], /class="col-detail">2025 · NZ<\/span>/);
+  assert.doesNotMatch(headers[3], /col-detail/, 'a name that is not shared needs no extra text');
+  assert.match(html, /<span class="spec-machine">John Deere 8R 340<\/span><span class="spec-detail">2025 · NZ<\/span>/);
+  const tray = trayMarkup(trayCards(model));
+  assert.equal([...tray.matchAll(/class="tray-detail"/g)].length, 3);
+  const removeLabels = [...html.matchAll(/aria-label="Remove ([^"]+) from comparison"/g)].map((match) => match[1]);
+  assert.equal(new Set(removeLabels).size, 4, 'every remove control has its own name');
+  assert.ok(removeLabels.includes('John Deere 8R 340 (2025, NZ)'));
+});
+
+test('a single-year comparison stays as simple as before', () => {
+  const model = buildComparisonModel(fleet.slice(0, 3));
+  const html = comparisonMarkup({ model, pickerQuery: '', collapsed: new Set() });
+  assert.doesNotMatch(html, /col-detail|spec-detail/);
+  assert.doesNotMatch(trayMarkup(trayCards(model)), /tray-detail/);
+});
+
+test('the direct picker names year and market for each match and says when the list is cut short', () => {
+  const html = pickerSuggestionsMarkup(variants.slice(0, 3), 0, 3);
+  assert.match(html, /<span class="suggestion-name">John Deere 8R 340<\/span><span class="suggestion-meta">2025 · AU · 100 hp<\/span>/);
+  assert.match(html, /<span class="suggestion-meta">2025 · NZ · 100 hp<\/span>/);
+  assert.match(html, /<span class="suggestion-add" aria-hidden="true">Add<\/span>/);
+  assert.doesNotMatch(html, /Showing/);
+  const truncated = pickerSuggestionsMarkup(variants.slice(0, 3), 0, 25);
+  assert.match(truncated, /<li class="suggestion-more" role="presentation">Showing 3 of 25\. Keep typing to narrow the list\.<\/li>/);
+});
+
+test('the relationship summary names the market once, whether or not the name is shared', () => {
+  const plain = results('table');
+  assert.match(plain, /John Deere 8R 340 \(2025\)<\/span>|John Deere 8R 340 \(2025\) · AU/);
+  const machines = variants;
+  const nz = machines.find((machine) => machine.machine_id === 'jd-8r-340-2025-nz');
+  const rel = findRelationshipResults(machines, nz, 100);
+  const nzRows = buildResultRows(rel, nz);
+  const html = resultsMarkup({ selectedMachine: nz, relationship: rel, rows: nzRows, visibleRows: nzRows, brands: summariseBrands(nzRows), results: { sort: 'closest', brands: [], columns: 'key' }, comparisonIds: [], layout: 'table' });
+  const summary = html.match(/<span class="summary-machine">([^<]*)<\/span>/)[1];
+  assert.equal(summary, 'John Deere 8R 340 (2025, NZ)');
 });
