@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { findRelationshipResults } from '../src/js/relationships.js';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const app = readFileSync(path.join(repoRoot, 'src/js/app.js'), 'utf8');
+const results = readFileSync(path.join(repoRoot, 'src/js/view-results.js'), 'utf8');
+const resultsModel = readFileSync(path.join(repoRoot, 'src/js/results-model.js'), 'utf8');
 const css = readFileSync(path.join(repoRoot, 'src/css/styles.css'), 'utf8');
 const displaySchema = readFileSync(path.join(repoRoot, 'src/js/display-schema.js'), 'utf8');
 const machines = [
@@ -22,17 +23,17 @@ test('relationship results preserve selected pinning and absolute difference ord
 });
 
 test('relationship rendering has the refined column contract and no Role column', () => {
-  for (const label of ['Machine', 'Δ Max HP', 'Δ Max HP %', 'Power to Weight', 'Rated HP', 'Max HP', 'Transmission', 'Top Speed (km/h)', 'Rear PTO option']) assert.match(app, new RegExp(label.replace(/[()]/g, '\\$&')));
-  assert.doesNotMatch(app, /<th scope="col">Role<\/th>/);
-  assert.match(app, /selected-row-label/);
-  assert.match(app, /relationship-summary/);
-  assert.match(app, /in-comparison-row/);
-  assert.match(app, /aria-label="Add/);
-  assert.doesNotMatch(app, /<th scope="col">Add<\/th>/);
+  for (const label of ['Machine', 'Δ Max HP', 'Δ Max HP %', 'Power to Weight', 'Rated HP', 'Max HP', 'Transmission', 'Top Speed (km/h)', 'Rear PTO option']) assert.match(resultsModel, new RegExp(`label: '${label.replace(/[()%]/g, '\\$&')}'`));
+  assert.doesNotMatch(results, /<th scope="col">Role<\/th>/);
+  assert.match(results, /selected-row-label/);
+  assert.match(results, /relationship-summary/);
+  assert.match(results, /in-comparison-row/);
+  assert.match(results, /aria-label="Add/);
+  assert.doesNotMatch(results, /<th scope="col">Add<\/th>/);
 });
 
 test('relationship table uses contained keyboard-focusable scrolling and sticky layers', () => {
-  assert.match(app, /class="relationship-scroll" role="region"[^>]*tabindex="0"/);
+  assert.match(results, /class="relationship-scroll" role="region"[^>]*tabindex="0"/);
   assert.match(css, /\.relationship-scroll\s*\{[^}]*max-height/s);
   assert.match(css, /\.relationship-scroll\s*\{[^}]*overflow:\s*auto/s);
   assert.match(css, /\.relationship-scroll thead th\s*\{[^}]*position:\s*sticky/s);

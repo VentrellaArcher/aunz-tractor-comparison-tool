@@ -17,8 +17,9 @@ test('clean build creates comparison output module and preserves generated data'
 
 test('application exposes labelled output actions and accessible output status', () => {
   const app = readFileSync(path.join(repoRoot, 'src/js/app.js'), 'utf8');
+  const views = readFileSync(path.join(repoRoot, 'src/js/view-comparison.js'), 'utf8');
   const html = readFileSync(path.join(repoRoot, 'src/index.html'), 'utf8');
-  for (const action of ['Copy Comparison', 'Export CSV', 'Print Comparison']) assert.match(app, new RegExp(action));
+  for (const action of ['Copy Comparison', 'Export CSV', 'Print Comparison']) assert.match(views, new RegExp(action));
   assert.match(html, /id="output-status"/);
   assert.match(app, /comparison-output\.js/);
 });

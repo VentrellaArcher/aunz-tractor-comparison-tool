@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -10,10 +10,23 @@ const requiredFiles = [
   'css/styles.css',
   'js/app.js',
   'js/data-loader.js',
+  'js/display-schema.js',
   'js/filters.js',
   'js/relationships.js',
   'js/comparison.js',
+  'js/comparison-model.js',
   'js/comparison-output.js',
+  'js/history-sync.js',
+  'js/identity.js',
+  'js/results-model.js',
+  'js/state.js',
+  'js/url-state.js',
+  'js/view-html.js',
+  'js/view-discovery.js',
+  'js/view-results.js',
+  'js/view-comparison.js',
+  'js/view-shell.js',
+  'js/view-help.js',
   'data/machines.json',
   'data/manufacturers.json',
   'data/model-years.json',
@@ -62,8 +75,14 @@ if (JSON.stringify(modelYears) !== JSON.stringify(derivedModelYears)) fail('mode
 if (!Array.isArray(filterOptions.manufacturers) || !Array.isArray(filterOptions.modelYears)) fail('filter options lack generated manufacturer/model-year arrays');
 if (machines.some((machine) => /synthetic|unofficial/i.test(JSON.stringify(machine)))) fail('synthetic test data entered production output');
 
-const productionText = requiredFiles
-  .filter((file) => file.endsWith('.html') || file.endsWith('.js'))
+const shippedScripts = readdirSync(path.join(distRoot, 'js')).filter((file) => file.endsWith('.js')).map((file) => `js/${file}`);
+for (const script of shippedScripts) {
+  const source = readFileSync(path.join(distRoot, script), 'utf8');
+  for (const match of source.matchAll(/(?:from\s+|import\()\s*'(\.\/[^']+)'/g)) {
+    if (!existsSync(path.join(distRoot, 'js', match[1]))) fail(`${script} imports ${match[1]}, which is not in the build`);
+  }
+}
+const productionText = ['index.html', ...shippedScripts]
   .map((file) => readFileSync(path.join(distRoot, file), 'utf8'))
   .join('\n');
 if (/localhost|file:\/\//i.test(productionText)) fail('production output contains localhost or file paths');

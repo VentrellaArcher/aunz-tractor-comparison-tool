@@ -37,6 +37,37 @@ export function removeMachineFromComparison(state, machineId) {
   return { machineIds: state.machineIds.filter((id) => id !== machineId), message: null };
 }
 
+// Deltas are always measured against Machine A, so promoting a machine changes the baseline only.
+export function makeBaseline(state, machineId) {
+  if (!state.machineIds.includes(machineId)) return { machineIds: [...state.machineIds], message: null };
+  return { machineIds: [machineId, ...state.machineIds.filter((id) => id !== machineId)], message: null };
+}
+
+// Keeps only unique IDs that still exist in the catalogue. `missing` counts unknown IDs and `overflow`
+// counts valid IDs beyond the limit, so callers can explain each case; `skipped` is every ID dropped.
+export function restoreComparisonIds(machineIds, machines, options = {}) {
+  const maxMachines = options.maxMachines ?? MAX_COMPARISON_MACHINES;
+  const known = new Set(machines.map((machine) => machine.machine_id));
+  const kept = [];
+  const overflowIds = new Set();
+  let skipped = 0;
+  let missing = 0;
+  for (const id of Array.isArray(machineIds) ? machineIds : []) {
+    if (typeof id !== 'string' || !known.has(id)) {
+      missing += 1;
+      skipped += 1;
+    } else if (kept.includes(id)) {
+      skipped += 1;
+    } else if (kept.length >= maxMachines) {
+      overflowIds.add(id);
+      skipped += 1;
+    } else {
+      kept.push(id);
+    }
+  }
+  return { state: { machineIds: kept, message: null }, skipped, missing, overflow: overflowIds.size };
+}
+
 export function clearComparison() {
   return createComparisonState();
 }

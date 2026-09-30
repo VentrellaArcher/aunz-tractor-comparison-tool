@@ -18,23 +18,25 @@ test('clean build creates comparison module and preserves generated data', () =>
 
 test('application wires comparison actions and accessible comparison region', () => {
   const app = readFileSync(path.join(repoRoot, 'src/js/app.js'), 'utf8');
+  const results = readFileSync(path.join(repoRoot, 'src/js/view-results.js'), 'utf8');
+  const comparison = readFileSync(path.join(repoRoot, 'src/js/view-comparison.js'), 'utf8');
+  const model = readFileSync(path.join(repoRoot, 'src/js/comparison-model.js'), 'utf8');
   const html = readFileSync(path.join(repoRoot, 'src/index.html'), 'utf8');
   assert.match(app, /toggleRelationshipRow/);
-  assert.match(app, /aria-label="Add/);
-  assert.match(app, /Clear Comparison/);
-  assert.match(app, /displaySchema/);
-  assert.match(app, /calculateDelta/);
-  assert.match(app, /remove-comparison/);
+  assert.match(results, /aria-label="Add/);
+  assert.match(comparison, /Clear Comparison/);
+  assert.match(model, /displaySchema/);
+  assert.match(model, /calculateDelta/);
+  assert.match(comparison, /remove-comparison/);
   assert.match(html, /id="comparison-heading"/);
   assert.match(html, /id="comparison-status"/);
   assert.match(html, /id="comparison"/);
 });
 
 test('comparison UI does not embed machine records or unsupported features', () => {
-  const source = [
-    readFileSync(path.join(repoRoot, 'src/js/app.js'), 'utf8'),
-    readFileSync(path.join(repoRoot, 'src/js/comparison.js'), 'utf8')
-  ].join('\n');
+  const source = ['app.js', 'comparison.js', 'comparison-model.js', 'view-comparison.js', 'view-results.js']
+    .map((file) => readFileSync(path.join(repoRoot, 'src/js', file), 'utf8'))
+    .join('\n');
   assert.doesNotMatch(source, /john-deere-|Massey Ferguson|Case IH|New Holland/);
   assert.doesNotMatch(source, /navigator\.clipboard|\.csv|window\.print|image-gallery/i);
 });

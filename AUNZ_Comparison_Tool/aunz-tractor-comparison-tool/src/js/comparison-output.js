@@ -1,5 +1,6 @@
 import { displaySchema, displaySections, formatDisplayValue } from './display-schema.js';
 import { calculateDelta, formatDelta, resolveComparisonMachines } from './comparison.js';
+import { selectionLabel } from './filters.js';
 
 export const OUTPUT_TITLE = 'AU/NZ Tractor Comparison Tool';
 export const MISSING_VALUE = '—';
@@ -33,6 +34,7 @@ export function createOutputModel(state, machines, buildInfo = {}) {
       machine: machine.machine,
       modelYear: machine.model_year,
       market: machine.market,
+      label: selectionLabel(machine),
       baseline: index === 0
     })),
     sections: displaySections.map((section) => ({ section, fields: fields.filter((field) => field.section === section) }))
@@ -47,7 +49,7 @@ export function createPlainText(model) {
   if (!model.available) return '';
   const lines = [model.title, `Compared machines: ${model.comparedMachineCount}`, ''];
   for (const machine of model.machines) {
-    lines.push(`${machine.baseline ? 'Machine A (baseline)' : 'Compared machine'}: ${machine.manufacturer} ${machine.machine} (${machine.modelYear}), market ${machine.market ?? MISSING_VALUE}, ID ${machine.machineId}`);
+    lines.push(`${machine.baseline ? 'Machine A (baseline)' : 'Compared machine'}: ${machine.label}, market ${machine.market ?? MISSING_VALUE}, ID ${machine.machineId}`);
   }
   lines.push('');
   for (const section of model.sections) {
@@ -76,7 +78,7 @@ export function escapeCsvCell(value) {
 
 export function createCsvText(model) {
   if (!model.available) return '';
-  const headings = model.machines.map((machine, index) => `Machine ${String.fromCharCode(65 + index)}${machine.baseline ? ' (baseline)' : ''}: ${machine.manufacturer} ${machine.machine} (${machine.modelYear})`);
+  const headings = model.machines.map((machine, index) => `Machine ${String.fromCharCode(65 + index)}${machine.baseline ? ' (baseline)' : ''}: ${machine.label}`);
   const header = ['Section', 'Specification', 'Unit', ...headings, ...model.machines.slice(1).map((_, index) => `Delta ${String.fromCharCode(66 + index)} - A`)].map(escapeCsvCell);
   const rows = [header];
   for (const section of model.sections) {
@@ -92,18 +94,47 @@ export function createSafeFilename(date = new Date()) {
   return `aunz-tractor-comparison-${iso}.csv`;
 }
 
-export async function copyComparison(model, clipboard = globalThis.navigator?.clipboard) {
-  if (!model.available) return { ok: false, message: 'Copy unavailable: no machines are compared.' };
+function legacyCopy(text, doc) {
+  if (!doc?.body || typeof doc.execCommand !== 'function') return false;
+  const field = doc.createElement('textarea');
+  field.value = text;
+  field.setAttribute('readonly', '');
+  field.style.position = 'fixed';
+  field.style.opacity = '0';
+  doc.body.appendChild(field);
+  field.select();
   try {
-    if (!clipboard?.writeText) throw new Error('Clipboard access is unavailable.');
-    await clipboard.writeText(createPlainText(model));
-    return { ok: true, message: 'Comparison copied successfully.' };
+    return doc.execCommand('copy');
   } catch {
-    return { ok: false, message: 'Copy failed. Check clipboard permissions and try again.' };
+    return false;
+  } finally {
+    field.remove();
   }
 }
 
-export function downloadCsv(model, browser = globalThis) {
+// Prefers the async clipboard API and falls back to a selection copy where it is blocked or missing.
+export async function writeClipboard(text, clipboard = globalThis.navigator?.clipboard, doc = globalThis.document) {
+  try {
+    if (!clipboard?.writeText) throw new Error('Clipboard access is unavailable.');
+    await clipboard.writeText(text);
+    return true;
+  } catch {
+    return legacyCopy(text, doc);
+  }
+}
+
+export async function copyComparison(model, clipboard = globalThis.navigator?.clipboard) {
+  if (!model.available) return { ok: false, message: 'Copy unavailable: no machines are compared.' };
+  if (await writeClipboard(createPlainText(model), clipboard)) return { ok: true, message: 'Comparison copied successfully.' };
+  return { ok: false, message: 'Copy failed. Check clipboard permissions and try again.' };
+}
+
+export async function copyLink(url, clipboard = globalThis.navigator?.clipboard) {
+  if (await writeClipboard(url, clipboard)) return { ok: true, message: 'Link copied. Opening it restores this selection and comparison.' };
+  return { ok: false, message: 'Copy failed. Select the address bar link to share instead.' };
+}
+
+export function downloadCsv(model, browser = globalThis, scheduleRevoke = (callback) => browser.setTimeout(callback, 30000)) {
   if (!model.available) return { ok: false, message: 'CSV export unavailable: no machines are compared.' };
   try {
     const blob = new browser.Blob([`\uFEFF${createCsvText(model)}`], { type: 'text/csv;charset=utf-8' });
@@ -111,8 +142,12 @@ export function downloadCsv(model, browser = globalThis) {
     const anchor = browser.document.createElement('a');
     anchor.href = url;
     anchor.download = createSafeFilename();
+    anchor.hidden = true;
+    // Some browsers only start a download from a link that is in the page, and cancel it if the URL is revoked straight away.
+    browser.document.body?.appendChild(anchor);
     anchor.click();
-    browser.URL.revokeObjectURL(url);
+    anchor.remove?.();
+    scheduleRevoke(() => browser.URL.revokeObjectURL(url));
     return { ok: true, message: 'CSV export started.' };
   } catch {
     return { ok: false, message: 'CSV export failed. Try again.' };
