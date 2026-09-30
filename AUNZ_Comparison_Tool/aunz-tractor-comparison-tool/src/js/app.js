@@ -31,6 +31,7 @@ const els = {
 };
 
 const PICKER_LIMIT = 8;
+const FILTERS_SUMMARY = '#filter-panel > summary';
 const DEFAULT_TITLE = document.title;
 
 function browserStorage(kind) {
@@ -71,6 +72,8 @@ const app = {
     resultRows: new Map(),
     toastTimer: 0,
     toastAction: null,
+    toastReturnFocus: null,
+    toastFallbackFocus: '',
     loading: false
   }
 };
@@ -118,16 +121,29 @@ function hideToast() {
   els.toasts.innerHTML = '';
 }
 
-function showToast(message, { actionLabel, onAction, duration } = {}) {
+function showToast(message, { actionLabel, onAction, duration, fallbackFocus = '' } = {}) {
   window.clearTimeout(app.ui.toastTimer);
   app.ui.toastAction = onAction ?? null;
+  app.ui.toastReturnFocus = null;
+  app.ui.toastFallbackFocus = fallbackFocus;
   els.toasts.innerHTML = toastMarkup(message, actionLabel);
   app.ui.toastTimer = window.setTimeout(hideToast, duration ?? (actionLabel ? 10000 : 6000));
 }
 
-function offerUndo(message, previousState) {
+// A pressed toast button disappears with the toast, so hand focus back to where the keyboard user was.
+function returnFocusFromToast(fallbackSelector, { onlyIfLost = false } = {}) {
+  const previous = app.ui.toastReturnFocus;
+  app.ui.toastReturnFocus = null;
+  if (onlyIfLost && document.activeElement && document.activeElement !== document.body) return;
+  const usable = previous && previous.isConnected && !previous.disabled && !previous.closest('[hidden]');
+  (usable ? previous : (fallbackSelector ? document.querySelector(fallbackSelector) : null))?.focus({ preventScroll: true });
+}
+
+const isTextEntry = (element) => Boolean(element?.matches?.('textarea, [contenteditable="true"], input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"])'));
+
+function offerUndo(message, previousState, fallbackFocus) {
   app.undo = previousState;
-  showToast(message, { actionLabel: 'Undo', onAction: undoLast });
+  showToast(message, { actionLabel: 'Undo', onAction: undoLast, fallbackFocus });
 }
 
 function undoLast() {
@@ -283,7 +299,7 @@ function onFilterChange(control) {
   const key = control.dataset.filterKey;
   commit(withFilterChange(before, catalogue(), key, control.value, control.checked));
   if (before.selectedMachineId && !app.state.selectedMachineId) {
-    showToast('The primary machine no longer matches the filters, so it was cleared.', { actionLabel: 'Undo', onAction: () => { app.undo = before; undoLast(); } });
+    showToast('The primary machine no longer matches the filters, so it was cleared.', { actionLabel: 'Undo', onAction: () => { app.undo = before; undoLast(); }, fallbackFocus: FILTERS_SUMMARY });
   }
 }
 
@@ -302,7 +318,8 @@ function resetAllFilters() {
   const before = app.state;
   $('search').value = '';
   commit(withFiltersReset(before, catalogue()), { history: 'push' });
-  offerUndo('Filters reset.', before);
+  document.querySelector(FILTERS_SUMMARY)?.focus({ preventScroll: true }); // the Reset button hides itself
+  offerUndo('Filters reset.', before, FILTERS_SUMMARY);
 }
 
 function applyCorrection(query) {
@@ -552,7 +569,7 @@ function removeFromComparison(machineId, trigger) {
   const before = app.state;
   const fromTray = els.tray.contains(trigger);
   commit(withComparisonRemoved(before, machineId), { history: 'push' });
-  offerUndo(`Removed ${selectionLabel(machine)} from the comparison.`, before);
+  offerUndo(`Removed ${selectionLabel(machine)} from the comparison.`, before, '.machine-card .remove-comparison, #comparison-search');
   window.requestAnimationFrame(() => {
     const container = fromTray && !els.tray.hidden ? els.tray : els.comparison;
     const next = container.querySelector('.remove-comparison, .tray-remove') ?? $('comparison-search');
@@ -572,7 +589,7 @@ function clearComparison() {
   const before = app.state;
   if (before.comparison.machineIds.length === 0) return;
   commit(withComparisonCleared(before), { history: 'push' });
-  offerUndo('Comparison cleared.', before);
+  offerUndo('Comparison cleared.', before, '#comparison-search');
   window.requestAnimationFrame(() => $('comparison-search')?.focus({ preventScroll: true }));
 }
 
@@ -673,7 +690,7 @@ function startOver() {
   const input = $('search');
   if (input) input.value = '';
   commit(withStartOver(), { history: 'push' });
-  offerUndo('Started over.', before);
+  offerUndo('Started over.', before, '[data-action="start-over"]');
 }
 
 function refresh() {
@@ -709,8 +726,16 @@ const clickActions = {
   'start-over': () => startOver(),
   'open-help': () => openHelp(),
   'close-help': () => closeHelp(),
-  'toast-action': () => app.ui.toastAction?.(),
-  'toast-close': () => hideToast(),
+  'toast-action': () => {
+    const fallback = app.ui.toastFallbackFocus;
+    app.ui.toastAction?.();
+    returnFocusFromToast(fallback);
+  },
+  'toast-close': () => {
+    const fallback = app.ui.toastFallbackFocus;
+    hideToast();
+    returnFocusFromToast(fallback);
+  },
   'retry-load': () => start()
 };
 
@@ -785,6 +810,14 @@ document.addEventListener('keydown', (event) => {
     return;
   }
   const typing = event.target.closest('input, textarea, select, [contenteditable="true"]');
+  // The message sits at the end of the page, so give keyboard users a direct way to press Undo while it is showing.
+  if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === 'z' && app.ui.toastAction && !isTextEntry(event.target)) {
+    event.preventDefault();
+    const fallback = app.ui.toastFallbackFocus;
+    app.ui.toastAction();
+    returnFocusFromToast(fallback, { onlyIfLost: true });
+    return;
+  }
   if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
     event.preventDefault();
     const input = $('search');
@@ -826,6 +859,11 @@ for (const [type, restart] of [['mouseenter', false], ['focusin', false], ['mous
     if (restart && els.toasts.firstElementChild) app.ui.toastTimer = window.setTimeout(hideToast, 4000);
   });
 }
+
+// Remember where the keyboard was before it moved into the message, so pressing Undo or Dismiss can return it there.
+els.toasts.addEventListener('focusin', (event) => {
+  if (event.relatedTarget && !els.toasts.contains(event.relatedTarget)) app.ui.toastReturnFocus = event.relatedTarget;
+});
 
 wideQuery.addEventListener('change', (event) => {
   app.ui.wide = event.matches;

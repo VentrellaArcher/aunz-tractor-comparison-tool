@@ -25,5 +25,5 @@ export function catalogueSummaryMarkup(facts) {
 }
 
 export function toastMarkup(message, actionLabel) {
-  return `<div class="toast"><span class="toast-message">${escapeHtml(message)}</span>${actionLabel ? `<button type="button" class="toast-action" data-action="toast-action">${escapeHtml(actionLabel)}</button>` : ''}<button type="button" class="toast-close" data-action="toast-close" aria-label="Dismiss message">${icon('close')}</button></div>`;
+  return `<div class="toast"><span class="toast-message">${escapeHtml(message)}</span>${actionLabel ? `<button type="button" class="toast-action" data-action="toast-action" aria-keyshortcuts="Control+Z Meta+Z">${escapeHtml(actionLabel)}</button>` : ''}<button type="button" class="toast-close" data-action="toast-close" aria-label="Dismiss message">${icon('close')}</button></div>`;
 }

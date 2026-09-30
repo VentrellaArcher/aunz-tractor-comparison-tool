@@ -243,6 +243,16 @@ test('help content covers the workflow, the data rules and the keyboard', () => 
   assert.match(html, /Nothing is estimated or filled in/);
   assert.match(html, /not a loaded or operating measure/);
   assert.match(html, /<kbd>\/<\/kbd>/);
+  assert.match(html, /<kbd>Ctrl<\/kbd> <kbd>Z<\/kbd>/, 'the Undo shortcut is documented');
+});
+
+test('an Undo message exposes its keyboard shortcut and a plain message has no action', () => {
+  const withUndo = toastMarkup('Removed X.', 'Undo');
+  assert.match(withUndo, /<button type="button" class="toast-action" data-action="toast-action" aria-keyshortcuts="Control\+Z Meta\+Z">Undo<\/button>/);
+  assert.match(withUndo, /aria-label="Dismiss message"/);
+  const plain = toastMarkup('Link copied.');
+  assert.doesNotMatch(plain, /toast-action/);
+  assert.match(plain, /toast-close/);
 });
 
 test('every interactive action in the markup has a handler in the application', () => {

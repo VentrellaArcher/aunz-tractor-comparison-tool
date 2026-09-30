@@ -20,6 +20,7 @@ export function helpMarkup() {
         <div><dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Enter</kbd></dt><dd>Move through and choose search suggestions</dd></div>
         <div><dt><kbd>Esc</kbd></dt><dd>Close suggestions or this window</dd></div>
         <div><dt><kbd>Space</kbd></dt><dd>Add or remove the focused machine from the comparison</dd></div>
+        <div><dt><kbd>Ctrl</kbd> <kbd>Z</kbd></dt><dd>Press the Undo button while its message is showing (<kbd>Cmd</kbd> <kbd>Z</kbd> on a Mac)</dd></div>
       </dl></section>
     </div>`;
 }
